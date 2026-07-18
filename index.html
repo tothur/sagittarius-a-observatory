@@ -238,8 +238,8 @@ void main(){
   // The astronomical camera is kept outside the emitting flow. Rays are advanced analytically to a strong-field bounding sphere so distant empty space costs no integration steps.
   float boundR=max(24.,uOuter+6.);float rayB=dot(ro,rd),rayC=dot(ro,ro)-boundR*boundR,rayDisc=rayB*rayB-rayC;
   float bgGain=uMode==0?1.:(uMode==1?.006:.045);
-  if(rayDisc<0.){outColor=vec4(background(rd)*bgGain,1.);return;}
-  float entry=max(0.,-rayB-sqrt(rayDisc));vec3 p=ro+rd*entry,v=rd;float travel=entry,alpha=0.,minR=1e4,turning=0.,lastDr=-1.;vec3 radiance=vec3(0);bool captured=false,escaped=false;
+  if(rayDisc<0.){outColor=vec4(background(rd)*bgGain,0.);return;}
+  float entry=max(0.,-rayB-sqrt(rayDisc));vec3 p=ro+rd*entry,v=rd;float travel=entry,alpha=0.,minR=1e4,turning=0.,lastDr=-1.,criticalDwell=0.,angularSweep=0.,emittedEnergy=0.;vec3 radiance=vec3(0),criticalRadiance=vec3(0);bool captured=false,escaped=false;
   float horizon=(1.+sqrt(max(.002,1.-uSpin*uSpin)))*uShadowScale;
   // Backward null-ray integration. This hybrid uses Schwarzschild bending plus a Kerr Lense-Thirring term; adaptive affine steps let near-critical rays orbit and accumulate higher-order emission.
   for(int i=0;i<176;i++){
@@ -247,6 +247,10 @@ void main(){
     float ps=abs(r-3.);float refine=exp(-ps*ps*.5)*clamp(float(uRingOrder)/2.,0.,1.);
     float stepLen=mix(.055,.9,smoothstep(2.05,17.,r))*mix(1.,.4,refine);stepLen*=1.+.025*jitter;
     vec3 radial=p/max(r,1e-3);float dr=dot(v,radial);if(lastDr*dr<0.)turning+=1.;lastDr=dr;
+    // Image-space photon subrings are made by the very narrow family of rays
+    // that loiter near the unstable photon orbit. Track that dwell time from
+    // the actual path instead of drawing a circular screen-space outline.
+    float criticalShell=exp(-pow((r-3.)/.42,2.))*(1.-smoothstep(.10,.58,abs(dr)));criticalDwell+=criticalShell*stepLen;angularSweep+=length(cross(p,v))/max(r*r,.001)*stepLen;
     // Stable midpoint-force integration of the Schwarzschild null-ray equation.
     // h=|x×v| is the impact angular momentum; refinement around r=3M lets
     // near-critical rays make extra half-orbits and create higher-order images.
@@ -283,7 +287,12 @@ void main(){
         float em=mix(emThick,emThin,thin);
         float nearCritical=exp(-pow((r-3.)/.72,2.))*(1.-smoothstep(.08,.72,abs(dr)));float order=min(float(uRingOrder),turning+nearCritical*2.);
         em*=1.+nearCritical*order*mix(.48,.90,edgeView)+edgeView*.16*min(turning,2.);float signal=em*boost*uBrightness*(.55+.72*fil);
-        vec3 c=palette(signal*(1.4+temp*g));radiance+=(1.-alpha)*c*signal*stepLen*mix(7.,4.8,thin);
+        vec3 c=palette(signal*(1.4+temp*g));vec3 source=(1.-alpha)*c*signal*stepLen*mix(7.,4.8,thin);radiance+=source;emittedEnergy+=dot(source,vec3(.2126,.7152,.0722));
+        // Once a ray has spent appreciable affine time near the photon shell,
+        // later disk crossings are higher-order images. Preserve their unresolved
+        // radiance separately so an opaque photosphere or TAA cannot erase the
+        // exponentially narrow critical curve.
+        float criticalOrder=clamp((criticalDwell-.16)*1.35+turning*.42,0.,float(uRingOrder));float criticalWeight=smoothstep(.20,.88,criticalDwell)*criticalOrder/max(1.,float(uRingOrder));criticalRadiance+=source*criticalWeight;
         float opacity=mix(den*.011,thinColumn*.12,thin);
         vec4 hs=hotspotEmission(p,travel);radiance+=(1.-alpha)*hs.rgb*stepLen*.31;alpha+=opacity*stepLen+hs.a*stepLen*.024;if(alpha>.985)break;
       }
@@ -297,11 +306,16 @@ void main(){
   // opaque foreground photosphere has already established its emergent light;
   // dimming it based on the ray's later classification creates false wedges.
   if(!captured&&!escaped)radiance*=mix(mix(.52,.28,smoothstep(64.,140.,float(uSteps))),1.,float(uObject));
+  // Subrings carry a small fraction of the total disk flux but have high
+  // surface brightness at finite display resolution. This compensation is
+  // applied only to path-selected higher-order emission, never to empty pixels.
+  radiance+=criticalRadiance*mix(.34,.72,float(uObject));
   if(escaped){radiance+=(1.-alpha)*background(normalize(v))*bgGain*mix(.24,1.,smoothstep(2.2,4.4,minR));}
   // Capture stays genuinely black except for foreground optically thin plasma integrated before horizon crossing.
   float edgeShadow=smoothstep(1.22,1.5,uInclination);/* At high inclination the finite step budget can miss marginal captures; minR supplies a conservative geodesic-derived shadow fallback for the optically thin Sgr A* flow. It is disabled for the opaque disk so foreground photospheric light is never erased. */float captureProxy=horizon+edgeShadow*.35;float shadowR=1.-smoothstep(captureProxy,captureProxy+.42,minR);radiance*=1.-shadowR*mix(.88,.96,edgeShadow)*(1.-float(uObject));
   if(uMode==2)radiance*=vec3(.82,.58,.45)*(uHotspot==1?1.25:.75);
-  outColor=vec4(max(radiance,0.),1.);
+  float criticalMask=exp(-pow((angularSweep-4.23)/.10,2.))*smoothstep(.00001,.006,emittedEnergy)*clamp(float(uRingOrder)/3.,0.,1.);
+  outColor=vec4(max(radiance,0.),criticalMask);
 }`;
 
 const postFrag=`
@@ -315,10 +329,10 @@ vec3 wideBlur(sampler2D t,vec2 uv,float rad){vec2 px=rad/uResolution;vec3 c=text
 vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}
 float seg(vec2 p,vec2 a,vec2 b){vec2 pa=p-a,ba=b-a;float h=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);return length(pa-ba*h);}
 void main(){
- vec2 uv=vUv;float ca=float(uAberration)*.0012*length(uv-.5);vec3 raw;if(uAberration==1&&uMode==0){raw=vec3(texture(uCurrent,uv+(uv-.5)*ca).r,texture(uCurrent,uv).g,texture(uCurrent,uv-(uv-.5)*ca).b);}else raw=texture(uCurrent,uv).rgb;
+ vec2 uv=vUv;float ca=float(uAberration)*.0012*length(uv-.5);vec4 rawSample=texture(uCurrent,uv);vec3 raw;if(uAberration==1&&uMode==0){raw=vec3(texture(uCurrent,uv+(uv-.5)*ca).r,rawSample.g,texture(uCurrent,uv-(uv-.5)*ca).b);}else raw=rawSample.rgb;float critical=max(rawSample.a,texture(uHistory,uv).a*.82);
  float blur=(uMode==1)?(uScattering*1.7+uInstrument*1.25):.75;vec3 soft=sampleBlur(uCurrent,uv,blur);vec3 wide=wideBlur(uCurrent,uv,uMode==0?4.6:2.4);vec3 hist=texture(uHistory,uv).rgb;vec3 col=raw;
  if(uMode==1){col=mix(raw,soft,clamp((uScattering+uInstrument)*.3,0.,.8));col=mix(col,hist,uAverage);if(uCompare==1){col=uv.x<.5?raw:hist;if(abs(uv.x-.5)<.00075)col=vec3(.22);}}
- else if(uMode==0){/* The accumulated buffer was previously computed but never displayed in cinematic mode. Blending it here stabilizes high-order rays without changing their mean brightness. */float taaMix=(uAberration==1)?0.:mix(.56,.38,smoothstep(1.22,1.5,uInclination));if(uPalette==4)taaMix*=.72;col=mix(raw,hist,taaMix);vec3 bloomNear=max(soft-vec3(.11),0.),bloomFar=max(wide-vec3(.045),0.);float printBloom=uPalette==4?.38:1.;col+=uBloom*(bloomNear*.58+bloomFar*.34)*mix(1.,1.12,float(uObject))*printBloom;}
+ else if(uMode==0){/* TAA stabilizes turbulent high-order rays, but the path-carried critical mask keeps the photon subrings sharp. */float taaMix=(uAberration==1)?0.:mix(.56,.38,smoothstep(1.22,1.5,uInclination));if(uPalette==4)taaMix*=.72;taaMix=mix(taaMix,min(taaMix,.14),critical);col=mix(raw,hist,taaMix);col+=max(raw-soft,0.)*critical*mix(.32,.58,float(uObject));vec3 bloomNear=max(soft-vec3(.11),0.),bloomFar=max(wide-vec3(.045),0.);float printBloom=uPalette==4?.38:1.;col+=uBloom*(bloomNear*.58+bloomFar*.34)*mix(1.,1.12,float(uObject))*printBloom;}
  else col+=max(soft-vec3(.17),0.)*uBloom*.42;
  if(uArtifacts==1&&uMode==1){float ripple=sin(length(uv-.5)*uResolution.y*.18+sin(atan(uv.y-.5,uv.x-.5)*7.))*0.03;col*=1.+ripple;col+=vec3(.06,.018,0.)*step(.985,hash(floor(uv*uResolution/7.)));}
  vec2 p=(uv-.5)*vec2(uResolution.x/uResolution.y,1.);float rad=length(p);float ang=atan(p.y,p.x);
@@ -326,13 +340,17 @@ void main(){
  if(uMode==2&&uAstroTrail==1){float inc=uInclination,a=.075+.007*uHotRadius,b=max(.012,a*abs(cos(inc)));vec2 ep=p/vec2(a,b);float ellipse=abs(length(ep)-1.)*min(a,b);col+=vec3(1.,.28,.07)*exp(-ellipse*ellipse*240000.)*.12;float ph=uHotPhase+uTime*6.28318/max(.1,uHotPeriod),oldPh=ph-uExposureTime*.45;vec2 q=vec2(cos(ph)*a,sin(ph)*b),qOld=vec2(cos(oldPh)*a,sin(oldPh)*b);float streak=1.-smoothstep(.0014,.0065,seg(p,qOld,q));col+=vec3(1.,.75,.35)*(exp(-dot(p-q,p-q)*10500.)*.95+streak*uExposureTime*.34);float behind=smoothstep(-.15,.7,sin(ph)*sin(inc));vec2 sec=-normalize(q+vec2(.0001))*.105;col+=vec3(.52,.68,1.)*exp(-dot(p-sec,p-sec)*26000.)*.38*behind;}
  if(uPolarizedIntensity==1&&uMode==1)col*=.38+.9*abs(sin(ang*2.+uFaraday));
  if(uGlare==1&&uMode==0){float g=pow(max(0.,1.-abs(p.y)*92.),20.)*pow(max(0.,1.-abs(p.x)*1.6),9.);col+=vec3(1.,.52,.19)*g*max(0.,length(raw)-.75)*.028;}
- float lum=dot(col,vec3(.2126,.7152,.0722));if(uPalette==1)col=vec3(lum*1.55,lum*.48,lum*.035);else if(uPalette==2)col=mix(vec3(.025,.002,.09),vec3(1.,.055,.005),smoothstep(.02,.65,lum))+vec3(1.,.72,.16)*smoothstep(.62,1.5,lum);else if(uPalette==3)col=vec3(lum);else if(uPalette==4){/* Deliberately cinematic print interpretation. An asymptotic highlight shoulder never hard-clips HDR radiance, while its soft toe preserves dim secondary images. Ray paths remain unchanged. */vec3 detailed=max(col+(raw-soft)*.24,0.);float dlum=dot(detailed,vec3(.2126,.7152,.0722));float l=pow(1.-exp(-.42*log2(1.+4.*max(dlum,0.))),.92);vec3 grade=mix(vec3(.005,.0013,.0006),vec3(.56,.09,.025),smoothstep(.005,.25,l));grade=mix(grade,vec3(1.,.40,.22),smoothstep(.24,.70,l));grade=mix(grade,vec3(1.08,.82,.70),smoothstep(.68,.98,l));vec3 sourceChroma=clamp(detailed/max(dlum,.001),vec3(.72),vec3(1.34));col=grade*mix(vec3(1.),sourceChroma,.10)*mix(.25,1.25,l);}
+ // At finite pixel size the exponentially narrow subrings need an unresolved
+ // surface-brightness reconstruction. Its position and strength come entirely
+ // from the path-carried critical mask; this is not a circular image overlay.
+ vec3 rawChroma=clamp(raw/max(dot(raw,vec3(.2126,.7152,.0722)),.02),vec3(.25),vec3(2.5));vec3 criticalTint=mix(vec3(1.,.11,.012),rawChroma,.12);col+=criticalTint*pow(critical,1.25)*mix(.10,.52,float(uObject));
+ float lum=dot(col,vec3(.2126,.7152,.0722));if(uPalette==1)col=vec3(lum*1.55,lum*.48,lum*.035);else if(uPalette==2)col=mix(vec3(.025,.002,.09),vec3(1.,.055,.005),smoothstep(.02,.65,lum))+vec3(1.,.72,.16)*smoothstep(.62,1.5,lum);else if(uPalette==3)col=vec3(lum);else if(uPalette==4){/* Deliberately cinematic print interpretation. An asymptotic highlight shoulder never hard-clips HDR radiance, while its soft toe preserves dim secondary images. */vec3 detailed=max(col+(raw-soft)*mix(.24,.58,critical),0.);float dlum=dot(detailed,vec3(.2126,.7152,.0722));float l=pow(1.-exp(-.42*log2(1.+4.*max(dlum,0.))),.92);vec3 grade=mix(vec3(.005,.0013,.0006),vec3(.56,.09,.025),smoothstep(.005,.25,l));grade=mix(grade,vec3(1.,.40,.22),smoothstep(.24,.70,l));grade=mix(grade,vec3(1.08,.82,.70),smoothstep(.68,.98,l));vec3 sourceChroma=clamp(detailed/max(dlum,.001),vec3(.72),vec3(1.34));col=grade*mix(vec3(1.),sourceChroma,.10)*mix(.25,1.25,l);}
  float edgeExposure=mix(1.,mix(1.52,1.16,float(uObject)),smoothstep(1.22,1.5,uInclination));col*=uExposure*edgeExposure;if(uTone==0)col=aces(col);else if(uTone==1)col=col/(1.+col);else col=clamp(col,0.,1.);
  col+=(hash(gl_FragCoord.xy+uTime*83.)-.5)*uGrain*(uMode==0?.7:.22);col*=1.-.22*pow(length((uv-.5)*1.35),2.);
  outColor=vec4(max(col,0.),1.);
 }`;
 
-const accumFrag=`precision highp float;in vec2 vUv;out vec4 outColor;uniform sampler2D uCurrent,uPrevious;uniform float uBlend;void main(){vec3 c=texture(uCurrent,vUv).rgb,p=texture(uPrevious,vUv).rgb;if(any(isnan(c))||any(isinf(c)))c=vec3(0);if(any(isnan(p))||any(isinf(p)))p=c;outColor=vec4(mix(c,p,uBlend),1.);}`;
+const accumFrag=`precision highp float;in vec2 vUv;out vec4 outColor;uniform sampler2D uCurrent,uPrevious;uniform float uBlend;void main(){vec4 c=texture(uCurrent,vUv),p=texture(uPrevious,vUv);if(any(isnan(c))||any(isinf(c)))c=vec4(0);if(any(isnan(p))||any(isinf(p)))p=c;outColor=mix(c,p,uBlend);}`;
 
 const renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.autoClear=false;
 const scene=new THREE.Scene(), camera=new THREE.Camera(), geometry=new THREE.PlaneGeometry(2,2);
