@@ -14,10 +14,10 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:
 #error{display:none;position:fixed;z-index:100;inset:20%;place-items:center;text-align:center;padding:30px;background:#130d0b;border:1px solid #a65b44;border-radius:12px;font-size:15px}
 .ui{position:fixed;z-index:10;transition:opacity .25s,transform .25s}.hidden-ui .ui{opacity:0;pointer-events:none}.panel{background:linear-gradient(145deg,rgba(10,14,15,.82),rgba(3,5,6,.62));border:1px solid var(--line);box-shadow:0 12px 45px rgba(0,0,0,.34);backdrop-filter:blur(16px) saturate(120%);-webkit-backdrop-filter:blur(16px) saturate(120%)}
 #info{left:18px;top:18px;width:248px;padding:16px 17px;border-radius:10px}.eyebrow{font-size:9px;letter-spacing:.28em;color:var(--amber);text-transform:uppercase}.title{font:600 20px/1.05 Georgia,"Times New Roman",serif;letter-spacing:.12em;margin:5px 0 3px}.subtitle{color:#a7b0b0;margin-bottom:13px}.readout{display:grid;grid-template-columns:1fr auto;gap:4px 12px;color:var(--muted);font-variant-numeric:tabular-nums}.readout b{color:#e1e7e7;font-weight:500;text-align:right}.mode-tabs{display:flex;gap:4px;margin-top:13px}.mode-tabs button{flex:1;padding:7px 4px;font-size:9px;letter-spacing:.08em}
-button,select{appearance:none;color:var(--ink);background:rgba(21,28,29,.76);border:1px solid var(--line);border-radius:6px;font:inherit;outline:none}button{cursor:pointer;padding:7px 9px;transition:.18s}button:hover,button.active{background:rgba(111,125,119,.23);border-color:rgba(255,190,110,.46)}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+button,select{appearance:none;color:var(--ink);background:rgba(21,28,29,.76);border:1px solid var(--line);border-radius:6px;font:inherit;outline:none}button{cursor:pointer;padding:7px 9px;transition:.18s}button:hover,button.active{background:rgba(111,125,119,.23);border-color:rgba(255,190,110,.46)}button:disabled,select:disabled{opacity:.38;cursor:not-allowed}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 #controls{right:14px;top:14px;bottom:14px;width:305px;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}#controls.collapsed{bottom:auto;height:49px}.controls-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:.18em;text-transform:uppercase}.controls-head button{padding:4px 8px}.controls-scroll{padding:4px 9px 14px;overflow:auto;scrollbar-width:thin;scrollbar-color:#394141 transparent}details{border-bottom:1px solid var(--line)}summary{cursor:pointer;list-style:none;padding:11px 5px;font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:#cbd3d3}summary::-webkit-details-marker{display:none}summary:after{content:"+";float:right;color:#7e8989}details[open] summary:after{content:"−"}.group{padding:0 5px 12px}.control{display:grid;grid-template-columns:106px 1fr 42px;align-items:center;gap:7px;min-height:28px;color:#aab5b5}.control output{text-align:right;color:#e4e9e9;font-variant-numeric:tabular-nums;font-size:10px}.control select{grid-column:2/4;width:100%;padding:5px}.control .wide{grid-column:2/4}.control input[type=range]{width:100%;height:3px;accent-color:#c88a50}.control input[type=checkbox]{justify-self:end;accent-color:#d18c4b;width:15px;height:15px}.control label{white-space:nowrap}.button-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.button-row button{font-size:10px}.hint{color:#6f7c7d;font-size:9px;margin:6px 0 0}.mode-only{display:none}.mode-eht .eht-only,.mode-gravity .gravity-only,.mode-cinematic .cine-only{display:grid}
 #presets{left:18px;bottom:18px;display:flex;flex-wrap:wrap;gap:5px;width:min(650px,calc(100vw - 360px));padding:7px;border-radius:9px}#presets button{font-size:9px;padding:6px 8px;color:#aeb9b9}.key{color:#7d8989;margin-left:2px}
-#seeing{left:18px;top:338px;width:280px;border-radius:10px;overflow:hidden}#seeing summary{padding:10px 13px}#seeing .copy{padding:0 13px 13px;color:#aab5b5;font-size:11px}#seeing .copy b{color:#ecf1f1}.copy p{margin:0 0 8px}
+#seeing{left:18px;top:338px;width:292px;border-radius:10px;overflow:hidden}#seeing summary{padding:10px 13px}#seeing .copy{padding:0 13px 13px;color:#aab5b5;font-size:11px}#seeing .copy b{color:#ecf1f1}.copy p{margin:0 0 8px}.model-chip{display:inline-block;margin-top:7px;padding:3px 6px;border:1px solid rgba(255,180,90,.25);border-radius:4px;color:#c9a26f;font-size:8px;letter-spacing:.1em;text-transform:uppercase}
 #gravityData{left:50%;bottom:70px;transform:translateX(-50%);padding:8px 14px;border-radius:8px;display:none;gap:18px;font-variant-numeric:tabular-nums;color:#aab5b5}.mode-gravity #gravityData{display:flex}.gravity-item b{display:block;color:#fff;font-size:13px;font-weight:500}.gravity-item span{font-size:9px;text-transform:uppercase;letter-spacing:.1em}
 #scaleBar{position:fixed;z-index:8;left:50%;bottom:70px;transform:translateX(-50%);display:none;color:#ddd;font-size:9px;text-align:center;text-shadow:0 1px 3px #000}.mode-eht #scaleBar{display:block}.bar{height:5px;width:86px;border:1px solid #ddd;border-top:0;margin:0 auto 4px}
 #help{position:fixed;z-index:9;right:330px;top:18px;color:#7e8989;font-size:9px;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 1px 3px #000}
@@ -29,20 +29,25 @@ button,select{appearance:none;color:var(--ink);background:rgba(21,28,29,.76);bor
 <div id="loading"><div class="loader"><div class="loader-ring"></div>Sagittarius A*<small>initializing relativistic renderer</small></div></div>
 <div id="error"></div>
 <button id="controlsToggleMobile" class="ui" aria-label="Open controls">☰</button>
-<section id="info" class="ui panel" aria-label="Sagittarius A star information">
-  <div class="eyebrow">Real-time model</div><div class="title">SAGITTARIUS A*</div><div class="subtitle">Galactic Centre Black Hole</div>
-  <div class="readout"><span>Mass</span><b>4.3 million M☉</b><span>Distance</span><b>27,000 ly</b><span>Spin a*</span><b id="rSpin">+0.50 model</b><span>Inclination</span><b id="rIncl">27°</b><span>Time rate</span><b id="rTime">120×</b><span>Observing</span><b id="rMode">Cinematic</b><span>Performance</span><b id="rFps">— fps</b></div>
+<section id="info" class="ui panel" aria-label="Selected black-hole model information">
+  <div id="modelEyebrow" class="eyebrow">Observed target · model</div><div id="modelTitle" class="title">SAGITTARIUS A*</div><div id="modelSubtitle" class="subtitle">Galactic Centre Black Hole</div>
+  <div class="readout"><span>Mass</span><b id="rMass">4.3 million M☉</b><span id="rContextLabel">Distance</span><b id="rContext">27,000 ly</b><span>Spin a*</span><b id="rSpin">+0.50 model</b><span>Inclination</span><b id="rIncl">27°</b><span>Time rate</span><b id="rTime">120×</b><span>Observing</span><b id="rMode">Cinematic</b><span>Performance</span><b id="rFps">— fps</b></div>
   <div class="mode-tabs"><button data-mode="0" class="active">1 CINEMA</button><button data-mode="1">2 EHT</button><button data-mode="2">3 GRAVITY</button></div>
 </section>
 <details id="seeing" class="ui panel">
   <summary>What am I seeing?</summary><div class="copy">
-  <p><b>Event horizon:</b> the no-return boundary. The larger dark <b>shadow</b> is its lensed silhouette. The bright <b>emission ring</b> is hot plasma; its finest nested edge is the <b>photon ring</b>, made by near-critical ray paths.</p>
-  <p>The approaching plasma is brighter through relativistic Doppler beaming. Curved light paths lift the rear of the thick flow into secondary images above and below the shadow.</p>
-  <p>Sgr A* is compact enough to evolve over minutes: the flare model defaults to a ~70-minute orbit near the ISCO. This is a physically motivated, Kerr-inspired radiative model, not a research-grade GRMHD calculation.</p></div>
+  <p><b>Event horizon:</b> the no-return boundary. The larger dark <b>shadow</b> is its lensed silhouette. The bright <b>emission ring</b> is plasma; its finest nested edge is the <b>photon ring</b>, made by near-critical ray paths.</p>
+  <p>The approaching material is brighter through relativistic Doppler beaming. Curved light paths lift the rear flow into secondary images above and below the shadow.</p>
+  <p id="modelSeeing">Sgr A* evolves over minutes. Its dim, optically thin, geometrically thick RIAF is shown at the low inclination favoured by current EHT model comparisons; spin remains uncertain.</p>
+  <span id="modelChip" class="model-chip">Kerr-inspired · not GRMHD</span></div>
 </details>
 <aside id="controls" class="ui panel" aria-label="Observatory controls">
   <div class="controls-head"><span>Observatory controls</span><button id="closeControls">×</button><button id="collapseControls">Hide</button></div>
   <div class="controls-scroll">
+    <details open><summary>Black hole</summary><div class="group">
+      <div class="control"><label for="objectModel">Target model</label><select id="objectModel"><option value="0">Sagittarius A* · RIAF</option><option value="1">Near-Eddington SMBH</option></select></div>
+      <p id="objectHint" class="hint">Observed Galactic Centre target. Thick, optically thin, radiatively inefficient flow; EHT and GRAVITY modes available.</p>
+    </div></details>
     <details open><summary>Spacetime</summary><div class="group">
       <div class="control"><label for="spin">Spin a* (model)</label><input id="spin" type="range" min="-.99" max=".99" step=".01" value=".5"><output></output></div>
       <div class="control"><label for="inclination">Inclination</label><input id="inclination" type="range" min="0" max="89" step="1" value="27"><output></output></div>
@@ -57,23 +62,23 @@ button,select{appearance:none;color:var(--ink);background:rgba(21,28,29,.76);bor
       <div class="control"><label for="flowBrightness">Flow brightness</label><input id="flowBrightness" type="range" min="0" max="3" step=".01" value="1.45"><output></output></div>
       <div class="control"><label for="density">Density</label><input id="density" type="range" min=".1" max="3" step=".01" value=".96"><output></output></div>
       <div class="control"><label for="temperature">Electron temp.</label><input id="temperature" type="range" min=".2" max="3" step=".01" value="1.35"><output></output></div>
-      <div class="control"><label for="thickness">Torus thickness</label><input id="thickness" type="range" min=".15" max="1.2" step=".01" value=".4"><output></output></div>
+      <div class="control"><label id="thicknessLabel" for="thickness">Torus thickness</label><input id="thickness" type="range" min=".08" max="1.2" step=".01" value=".4"><output></output></div>
       <div class="control"><label for="innerRadius">Inner radius (r_g)</label><input id="innerRadius" type="range" min="1.3" max="8" step=".1" value="3.4"><output></output></div>
       <div class="control"><label for="outerRadius">Outer radius (r_g)</label><input id="outerRadius" type="range" min="8" max="28" step=".1" value="15"><output></output></div>
       <div class="control"><label for="rotationSpeed">Rotation speed</label><input id="rotationSpeed" type="range" min=".1" max="1.8" step=".01" value="1"><output></output></div>
       <div class="control"><label for="turbulence">Turbulence</label><input id="turbulence" type="range" min="0" max="2" step=".01" value=".92"><output></output></div>
       <div class="control"><label for="magCoherence">Mag. coherence</label><input id="magCoherence" type="range" min="0" max="1" step=".01" value=".7"><output></output></div>
-      <div class="control"><label for="flowState">Magnetic state</label><select id="flowState"><option value="0" selected>SANE-like · turbulent</option><option value="1">MAD-like · organized arcs</option></select></div>
+      <div class="control"><label id="flowStateLabel" for="flowState">Magnetic state</label><select id="flowState"><option value="0" selected>SANE-like · turbulent</option><option value="1">MAD-like · organized arcs</option></select></div>
       <div class="control"><label for="densitySlope">Density slope</label><input id="densitySlope" type="range" min=".2" max="3" step=".01" value="1.25"><output></output></div>
       <div class="control"><label for="emissivityFalloff">Emissivity falloff</label><input id="emissivityFalloff" type="range" min=".3" max="3" step=".01" value="1.4"><output></output></div>
-      <div class="control"><label for="doppler">Doppler boost</label><input id="doppler" type="range" min="0" max="1.5" step=".01" value=".9"><output></output></div>
+      <div class="control"><label for="doppler">Doppler boost</label><input id="doppler" type="range" min="0" max="1.5" step=".01" value=".82"><output></output></div>
       <div class="control"><label for="redshift">Grav. redshift</label><input id="redshift" type="range" min="0" max="1.5" step=".01" value="1"><output></output></div>
     </div></details>
     <details><summary>Hotspot</summary><div class="group">
       <div class="control"><label for="hotspot">Enable hotspot</label><input id="hotspot" type="checkbox"><span></span></div>
       <div class="button-row"><button id="triggerFlare">Trigger flare · F</button><button id="hotDirection">Prograde orbit</button></div>
       <div class="control"><label for="hotRadius">Orbital radius</label><input id="hotRadius" type="range" min="3.2" max="10" step=".1" value="5.8"><output></output></div>
-      <div class="control"><label for="hotPeriod">Period (minutes)</label><input id="hotPeriod" type="range" min="20" max="140" step="1" value="70"><output></output></div>
+      <div class="control"><label for="hotPeriod">Period (minutes)</label><input id="hotPeriod" type="range" min="20" max="900" step="1" value="70"><output></output></div>
       <div class="control"><label for="hotBrightness">Brightness</label><input id="hotBrightness" type="range" min="0" max="5" step=".01" value="2.1"><output></output></div>
       <div class="control"><label for="hotLifetime">Lifetime (orbits)</label><input id="hotLifetime" type="range" min=".2" max="8" step=".1" value="3.5"><output></output></div>
       <div class="control"><label for="hotShear">Shearing</label><input id="hotShear" type="range" min="0" max="2" step=".01" value=".7"><output></output></div>
@@ -122,7 +127,7 @@ button,select{appearance:none;color:var(--ink);background:rgba(21,28,29,.76);bor
 </nav>
 <div id="scaleBar"><div class="bar"></div>20 μas <span id="compareLabel" style="display:none">· RAW | AVERAGED</span></div>
 <div id="gravityData" class="ui panel"><div class="gravity-item"><b id="gPhase">0°</b><span>orbital phase</span></div><div class="gravity-item"><b id="gOffset">0 μas</b><span>projected offset</span></div><div class="gravity-item"><b id="gPeriod">70 min</b><span>model period</span></div></div>
-<div id="help">Space pause · R reset · F flare · 1–3 modes</div>
+<div id="help">Space pause · R reset · F flare · B target · 1–3 modes</div>
 
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
@@ -142,7 +147,7 @@ precision highp float; precision highp int;
 in vec2 vUv; out vec4 outColor;
 uniform vec2 uResolution; uniform float uTime,uFrame,uSpin,uInclination,uPositionAngle,uFrameDrag,uShadowScale;
 uniform vec3 uCamPos,uCamRight,uCamUp,uCamForward,uPan; uniform float uFov;
-uniform int uSteps,uRingOrder,uMode,uFlowState,uFlowDir; uniform float uBrightness,uDensity,uTemperature,uThickness,uInner,uOuter,uRotation,uTurbulence,uMagCoherence,uDensitySlope,uFalloff,uDoppler,uRedshift;
+uniform int uSteps,uRingOrder,uMode,uObject,uFlowState,uFlowDir; uniform float uBrightness,uDensity,uTemperature,uThickness,uInner,uOuter,uRotation,uTurbulence,uMagCoherence,uDensitySlope,uFalloff,uDoppler,uRedshift;
 uniform int uHotspot,uHotDir; uniform float uHotRadius,uHotPeriod,uHotBrightness,uHotAge,uHotLifetime,uHotShear,uHotCooling,uTrail,uHotPhase;
 uniform float uBackground,uDust,uAlignment;
 
@@ -180,11 +185,18 @@ vec3 background(vec3 d){
   return col;
 }
 float torusDensity(vec3 p,float localT,out float filament){
-  float R=max(length(p.xy),.001),z=p.z,ph=atan(p.y,p.x);float h=.16+uThickness*R;
+  float R=max(length(p.xy),.001),z=p.z,ph=atan(p.y,p.x),thin=float(uObject);
+  // Sgr A*: thick, optically thin RIAF with emission continuing inside the
+  // nominal torus peak. Luminous model: an H/R~0.1 photospheric core with a
+  // softened ISCO edge, appropriate to a near-Eddington thin/slim disk.
+  float h=mix(.16+uThickness*R,.035+uThickness*.20*R,thin);
   float softInner=smoothstep(uInner*.58,uInner+.5,R);float diffuse=.28*exp(-pow((R-uInner*.72)/1.8,2.));
-  float outer=exp(-pow(max(R-uInner,0.)/max(uOuter-uInner,1.),2.)*2.7);
-  float radial=(softInner+diffuse)*outer*pow(max(R/uInner,1.),-uDensitySlope);
-  float vertical=exp(-.5*pow(abs(z)/h,1.75));
+  float thickOuter=exp(-pow(max(R-uInner,0.)/max(uOuter-uInner,1.),2.)*2.7);
+  float thickRadial=(softInner+diffuse)*thickOuter*pow(max(R/uInner,1.),-uDensitySlope);
+  float thinInner=smoothstep(uInner-.15,uInner+.48,R);float thinOuter=exp(-pow(max(R-uOuter,0.)/2.8,2.));
+  float thinRadial=thinInner*thinOuter*pow(max(R/uInner,1.),-.72*uDensitySlope);
+  float radial=mix(thickRadial,thinRadial,thin);
+  float vertical=mix(exp(-.5*pow(abs(z)/h,1.75)),exp(-pow(abs(z)/max(h,.015),3.2)),thin);
   if(radial*vertical<.001){filament=0.;return 0.;}
   float om=float(uFlowDir)*uRotation/max(pow(R,1.5)+float(uFlowDir)*uSpin,.42);float adv=ph-om*localT;
   vec3 q=vec3(R*.34*cos(adv),R*.34*sin(adv),z*.72);float w1=fbm(q*.82+vec3(0,0,localT*.012));
@@ -192,8 +204,10 @@ float torusDensity(vec3 p,float localT,out float filament){
   float n=fbm(warped*1.55+vec3(0,0,localT*.021));float fine=noise3(warped*5.1+vec3(localT*.018,0,0));
   float spiral=.5+.5*sin((uFlowState==1?2.5:4.5)*adv-(uFlowState==1?4.2:7.2)*log(R)+4.1*w1);
   float arcs=pow(smoothstep(.34,.94,spiral),1.4)*mix(.5,1.65,uMagCoherence);
-  float organized=mix(.35+.95*n*n,.25+1.55*arcs*(.45+.8*n),float(uFlowState));
-  float clumps=.72+.58*n+.22*(fine-.5);filament=clamp(.45*n+.75*arcs,0.,1.6);
+  float thickOrganized=mix(.35+.95*n*n,.25+1.55*arcs*(.45+.8*n),float(uFlowState));
+  float thinOrganized=.76+.20*n+.24*arcs*uMagCoherence;
+  float organized=mix(thickOrganized,thinOrganized,thin);
+  float clumps=mix(.72+.58*n+.22*(fine-.5),.86+.18*n+.12*(fine-.5)*uTurbulence,thin);filament=clamp(.45*n+.75*arcs,0.,1.6);
   return radial*vertical*organized*clumps*uDensity;
 }
 vec4 hotspotEmission(vec3 p,float pathTime){
@@ -232,22 +246,30 @@ void main(){
     p.xy=mat2(cw,-sw,sw,cw)*p.xy;v.xy=mat2(cw,-sw,sw,cw)*v.xy;travel+=stepLen;r=length(p);
     if(r<uOuter+6.){
       float fil;float den=torusDensity(p,uTime-travel*.12,fil);if(den>.0005){
-        float R=max(1.5,length(p.xy));vec3 az=normalize(vec3(-p.y,p.x,0.))*float(uFlowDir);vec3 vel=az*min(.66,.88/sqrt(R));float beta=length(vel);float gamma=inversesqrt(max(.12,1.-beta*beta));
+        float R=max(1.5,length(p.xy)),thin=float(uObject);vec3 az=normalize(vec3(-p.y,p.x,0.))*float(uFlowDir);vec3 vel=az*min(mix(.54,.68,thin),mix(.60,.82,thin)/sqrt(R));float beta=length(vel);float gamma=inversesqrt(max(.12,1.-beta*beta));
         float dop=clamp(1./(gamma*max(.24,1.-dot(vel,normalize(uCamPos-p)))),.42,1.9);
         float grav=sqrt(max(.025,1.-2./max(r,2.02)+.28*uSpin*uSpin/(r*r)));
         // g combines special-relativistic Doppler/beaming and gravitational
         // redshift. Optically thin synchrotron specific intensity scales ~g^(3+α).
-        float edgeView=smoothstep(1.22,1.5,uInclination);float g=mix(1.,dop,clamp(uDoppler,0.,1.)*mix(1.,.18,edgeView))*mix(1.,grav,clamp(uRedshift,0.,1.));float boost=min(pow(max(g,.08),3.45),mix(9.5,7.5,edgeView));
-        float temp=uTemperature*pow(uInner/max(R,uInner*.62),.82);vec3 bdir=normalize(mix(vec3(.32*cos(atan(p.y,p.x)),.32*sin(atan(p.y,p.x)),1.),az,.72));
+        // Doppler contrast grows with inclination: the line-of-sight velocity is
+        // largest edge-on. The prior edge-on damping was visually convenient but
+        // physically backward; the bounded boost cap prevents numerical blowout.
+        float edgeView=smoothstep(1.22,1.5,uInclination);float g=mix(1.,dop,clamp(uDoppler,0.,1.)*mix(.86,1.,edgeView))*mix(1.,grav,clamp(uRedshift,0.,1.));float boost=min(pow(max(g,.08),3.45),mix(9.5,8.2,edgeView));
+        float tempThick=uTemperature*pow(uInner/max(R,uInner*.62),.82);float noTorque=max(.012,1.-sqrt(uInner/max(R,uInner+.001)));float tempThin=uTemperature*2.35*pow(uInner/max(R,uInner),.75)*pow(noTorque,.25);float temp=mix(tempThick,tempThin,thin);vec3 bdir=normalize(mix(vec3(.32*cos(atan(p.y,p.x)),.32*sin(atan(p.y,p.x)),1.),az,.72));
         float pitch=.42+.78*(1.-pow(dot(bdir,v),2.));float fall=exp(-uFalloff*max(0.,R-uInner)/6.);
         /* Long edge-on sightlines cross much more optically thin plasma. Reduce
            per-step weight instead of flattening the torus, preserving a thick
            RIAF while preventing path-length saturation from becoming stripes. */
-        float em=den*den*(.18+temp)*pitch*fall*mix(1.,.46,edgeView);
+        float emThick=den*den*(.18+temp)*pitch*fall*mix(1.,.54,edgeView);
+        // Near-Eddington emission is photospheric rather than transparent volume
+        // emission. A limb factor and higher absorption make the first disk
+        // crossing dominate while geodesics still create the rear/secondary arcs.
+        float limb=.48+.52*sqrt(abs(v.z));float emThin=den*(.22+1.28*temp)*limb*fall*(.68+.32*fil);
+        float em=mix(emThick,emThin,thin);
         float nearCritical=exp(-pow((r-3.)/.72,2.))*(1.-smoothstep(.08,.72,abs(dr)));float order=min(float(uRingOrder),turning+nearCritical*2.);
         em*=1.+nearCritical*order*mix(.48,.90,edgeView)+edgeView*.16*min(turning,2.);float signal=em*boost*uBrightness*(.55+.72*fil);
-        vec3 c=palette(signal*(1.4+temp*g));radiance+=(1.-alpha)*c*signal*stepLen*7.;
-        vec4 hs=hotspotEmission(p,travel);radiance+=(1.-alpha)*hs.rgb*stepLen*.31;alpha+=den*stepLen*.011+hs.a*stepLen*.024;if(alpha>.985)break;
+        vec3 c=palette(signal*(1.4+temp*g));radiance+=(1.-alpha)*c*signal*stepLen*mix(7.,4.8,thin);
+        vec4 hs=hotspotEmission(p,travel);radiance+=(1.-alpha)*hs.rgb*stepLen*.31;alpha+=den*stepLen*mix(.011,.14,thin)+hs.a*stepLen*.024;if(alpha>.985)break;
       }
     }
   }
@@ -257,7 +279,7 @@ void main(){
   if(!captured&&!escaped)radiance*=.28;
   if(escaped){radiance+=(1.-alpha)*background(normalize(v))*bgGain*mix(.24,1.,smoothstep(2.2,4.4,minR));}
   // Capture stays genuinely black except for foreground optically thin plasma integrated before horizon crossing.
-  float edgeShadow=smoothstep(1.22,1.5,uInclination);/* At high inclination the finite step budget can miss marginal captures; minR supplies a conservative geodesic-derived shadow fallback. */float captureProxy=horizon+edgeShadow*.35;float shadowR=1.-smoothstep(captureProxy,captureProxy+.42,minR);radiance*=1.-shadowR*mix(.88,.96,edgeShadow);
+  float edgeShadow=smoothstep(1.22,1.5,uInclination);/* At high inclination the finite step budget can miss marginal captures; minR supplies a conservative geodesic-derived shadow fallback for the optically thin Sgr A* flow. It is disabled for the opaque disk so foreground photospheric light is never erased. */float captureProxy=horizon+edgeShadow*.35;float shadowR=1.-smoothstep(captureProxy,captureProxy+.42,minR);radiance*=1.-shadowR*mix(.88,.96,edgeShadow)*(1.-float(uObject));
   if(uMode==2)radiance*=vec3(.82,.58,.45)*(uHotspot==1?1.25:.75);
   outColor=vec4(max(radiance,0.),1.);
 }`;
@@ -265,7 +287,7 @@ void main(){
 const postFrag=`
 precision highp float; in vec2 vUv; out vec4 outColor;
 uniform sampler2D uCurrent,uHistory;uniform vec2 uResolution;uniform float uBloom,uExposure,uExposureTime,uGrain,uTime,uScattering,uInstrument,uAverage,uFaraday,uPolFraction,uPolDensity,uToroidal,uPoloidal,uFieldCoherence,uInclination,uHotRadius,uHotPhase,uHotPeriod;
-uniform int uMode,uTone,uPalette,uAberration,uGlare,uArtifacts,uCompare,uPolarization,uPolarizedIntensity,uAstroTrail;
+uniform int uMode,uObject,uTone,uPalette,uAberration,uGlare,uArtifacts,uCompare,uPolarization,uPolarizedIntensity,uAstroTrail;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 vec3 sampleBlur(sampler2D t,vec2 uv,float rad){vec2 px=1./uResolution*rad;vec3 c=texture(t,uv).rgb*4.;c+=texture(t,uv+vec2(px.x,0)).rgb;c+=texture(t,uv-vec2(px.x,0)).rgb;c+=texture(t,uv+vec2(0,px.y)).rgb;c+=texture(t,uv-vec2(0,px.y)).rgb;c+=texture(t,uv+px).rgb;c+=texture(t,uv-px).rgb;return c/10.;}
 const vec2 B8[8]=vec2[8](vec2(.923,.382),vec2(.382,.923),vec2(-.382,.923),vec2(-.923,.382),vec2(-.923,-.382),vec2(-.382,-.923),vec2(.382,-.923),vec2(.923,-.382));
@@ -276,7 +298,7 @@ void main(){
  vec2 uv=vUv;float ca=float(uAberration)*.0012*length(uv-.5);vec3 raw;if(uAberration==1&&uMode==0){raw=vec3(texture(uCurrent,uv+(uv-.5)*ca).r,texture(uCurrent,uv).g,texture(uCurrent,uv-(uv-.5)*ca).b);}else raw=texture(uCurrent,uv).rgb;
  float blur=(uMode==1)?(uScattering*1.7+uInstrument*1.25):.75;vec3 soft=sampleBlur(uCurrent,uv,blur);vec3 wide=wideBlur(uCurrent,uv,uMode==0?4.6:2.4);vec3 hist=texture(uHistory,uv).rgb;vec3 col=raw;
  if(uMode==1){col=mix(raw,soft,clamp((uScattering+uInstrument)*.3,0.,.8));col=mix(col,hist,uAverage);if(uCompare==1){col=uv.x<.5?raw:hist;if(abs(uv.x-.5)<.00075)col=vec3(.22);}}
- else if(uMode==0){vec3 bloomNear=max(soft-vec3(.11),0.),bloomFar=max(wide-vec3(.045),0.);col+=uBloom*(bloomNear*.58+bloomFar*.34);}
+ else if(uMode==0){vec3 bloomNear=max(soft-vec3(.11),0.),bloomFar=max(wide-vec3(.045),0.);col+=uBloom*(bloomNear*.58+bloomFar*.34)*mix(1.,1.12,float(uObject));}
  else col+=max(soft-vec3(.17),0.)*uBloom*.42;
  if(uArtifacts==1&&uMode==1){float ripple=sin(length(uv-.5)*uResolution.y*.18+sin(atan(uv.y-.5,uv.x-.5)*7.))*0.03;col*=1.+ripple;col+=vec3(.06,.018,0.)*step(.985,hash(floor(uv*uResolution/7.)));}
  vec2 p=(uv-.5)*vec2(uResolution.x/uResolution.y,1.);float rad=length(p);float ang=atan(p.y,p.x);
@@ -285,7 +307,7 @@ void main(){
  if(uPolarizedIntensity==1&&uMode==1)col*=.38+.9*abs(sin(ang*2.+uFaraday));
  if(uGlare==1&&uMode==0){float g=pow(max(0.,1.-abs(p.y)*92.),20.)*pow(max(0.,1.-abs(p.x)*1.6),9.);col+=vec3(1.,.52,.19)*g*max(0.,length(raw)-.75)*.028;}
  float lum=dot(col,vec3(.2126,.7152,.0722));if(uPalette==1)col=vec3(lum*1.55,lum*.48,lum*.035);else if(uPalette==2)col=mix(vec3(.025,.002,.09),vec3(1.,.055,.005),smoothstep(.02,.65,lum))+vec3(1.,.72,.16)*smoothstep(.62,1.5,lum);else if(uPalette==3)col=vec3(lum);
- float edgeExposure=mix(1.,1.35,smoothstep(1.22,1.5,uInclination));col*=uExposure*edgeExposure;if(uTone==0)col=aces(col);else if(uTone==1)col=col/(1.+col);else col=clamp(col,0.,1.);
+ float edgeExposure=mix(1.,mix(1.52,1.16,float(uObject)),smoothstep(1.22,1.5,uInclination));col*=uExposure*edgeExposure;if(uTone==0)col=aces(col);else if(uTone==1)col=col/(1.+col);else col=clamp(col,0.,1.);
  col+=(hash(gl_FragCoord.xy+uTime*83.)-.5)*uGrain*(uMode==0?.7:.22);col*=1.-.22*pow(length((uv-.5)*1.35),2.);
  outColor=vec4(max(col,0.),1.);
 }`;
@@ -295,10 +317,10 @@ const accumFrag=`precision highp float;in vec2 vUv;out vec4 outColor;uniform sam
 const renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.autoClear=false;
 const scene=new THREE.Scene(), camera=new THREE.Camera(), geometry=new THREE.PlaneGeometry(2,2);
 const U={};function uf(v){return{value:v}};function ui(v){return{value:v}};
-Object.assign(U,{uResolution:uf(new THREE.Vector2()),uTime:uf(0),uFrame:uf(0),uSpin:uf(.5),uInclination:uf(THREE.MathUtils.degToRad(27)),uPositionAngle:uf(-.21),uFrameDrag:uf(1),uShadowScale:uf(1),uCamPos:uf(new THREE.Vector3()),uCamRight:uf(new THREE.Vector3()),uCamUp:uf(new THREE.Vector3()),uCamForward:uf(new THREE.Vector3()),uPan:uf(new THREE.Vector3()),uFov:uf(.78),uSteps:ui(84),uRingOrder:ui(2),uMode:ui(0),uFlowState:ui(0),uFlowDir:ui(1),uBrightness:uf(1.45),uDensity:uf(.96),uTemperature:uf(1.35),uThickness:uf(.4),uInner:uf(3.4),uOuter:uf(15),uRotation:uf(1),uTurbulence:uf(.92),uMagCoherence:uf(.7),uDensitySlope:uf(1.25),uFalloff:uf(1.4),uDoppler:uf(.9),uRedshift:uf(1),uHotspot:ui(0),uHotDir:ui(1),uHotRadius:uf(5.8),uHotPeriod:uf(7),uHotBrightness:uf(2.1),uHotAge:uf(0),uHotLifetime:uf(3.5),uHotShear:uf(.7),uHotCooling:uf(.55),uTrail:uf(.48),uHotPhase:uf(1.1),uBackground:uf(.82),uDust:uf(.9),uAlignment:uf(.42)});
+Object.assign(U,{uResolution:uf(new THREE.Vector2()),uTime:uf(0),uFrame:uf(0),uSpin:uf(.5),uInclination:uf(THREE.MathUtils.degToRad(27)),uPositionAngle:uf(-.21),uFrameDrag:uf(1),uShadowScale:uf(1),uCamPos:uf(new THREE.Vector3()),uCamRight:uf(new THREE.Vector3()),uCamUp:uf(new THREE.Vector3()),uCamForward:uf(new THREE.Vector3()),uPan:uf(new THREE.Vector3()),uFov:uf(.78),uSteps:ui(84),uRingOrder:ui(2),uMode:ui(0),uObject:ui(0),uFlowState:ui(0),uFlowDir:ui(1),uBrightness:uf(1.45),uDensity:uf(.96),uTemperature:uf(1.35),uThickness:uf(.4),uInner:uf(3.4),uOuter:uf(15),uRotation:uf(1),uTurbulence:uf(.92),uMagCoherence:uf(.7),uDensitySlope:uf(1.25),uFalloff:uf(1.4),uDoppler:uf(.82),uRedshift:uf(1),uHotspot:ui(0),uHotDir:ui(1),uHotRadius:uf(5.8),uHotPeriod:uf(7),uHotBrightness:uf(2.1),uHotAge:uf(0),uHotLifetime:uf(3.5),uHotShear:uf(.7),uHotCooling:uf(.55),uTrail:uf(.48),uHotPhase:uf(1.1),uBackground:uf(.82),uDust:uf(.9),uAlignment:uf(.42)});
 const rayMaterial=new THREE.RawShaderMaterial({glslVersion:THREE.GLSL3,vertexShader:vert,fragmentShader:frag,uniforms:U,depthTest:false,depthWrite:false}),rayMesh=new THREE.Mesh(geometry,rayMaterial);rayMesh.frustumCulled=false;scene.add(rayMesh);
 const postScene=new THREE.Scene(),postCamera=new THREE.Camera();
-const PU={uCurrent:uf(null),uHistory:uf(null),uResolution:uf(new THREE.Vector2()),uBloom:uf(.82),uExposure:uf(1.28),uExposureTime:uf(.18),uGrain:uf(.012),uTime:uf(0),uScattering:uf(.55),uInstrument:uf(.65),uAverage:uf(.92),uFaraday:uf(.35),uPolFraction:uf(.45),uPolDensity:uf(18),uToroidal:uf(.75),uPoloidal:uf(.35),uFieldCoherence:uf(.72),uInclination:uf(U.uInclination.value),uHotRadius:uf(5.8),uHotPhase:uf(1.1),uHotPeriod:uf(7),uMode:ui(0),uTone:ui(0),uPalette:ui(0),uAberration:ui(0),uGlare:ui(1),uArtifacts:ui(0),uCompare:ui(0),uPolarization:ui(0),uPolarizedIntensity:ui(0),uAstroTrail:ui(1)};
+const PU={uCurrent:uf(null),uHistory:uf(null),uResolution:uf(new THREE.Vector2()),uBloom:uf(.82),uExposure:uf(1.28),uExposureTime:uf(.18),uGrain:uf(.012),uTime:uf(0),uScattering:uf(.55),uInstrument:uf(.65),uAverage:uf(.92),uFaraday:uf(.35),uPolFraction:uf(.45),uPolDensity:uf(18),uToroidal:uf(.75),uPoloidal:uf(.35),uFieldCoherence:uf(.72),uInclination:uf(U.uInclination.value),uHotRadius:uf(5.8),uHotPhase:uf(1.1),uHotPeriod:uf(7),uMode:ui(0),uObject:ui(0),uTone:ui(0),uPalette:ui(0),uAberration:ui(0),uGlare:ui(1),uArtifacts:ui(0),uCompare:ui(0),uPolarization:ui(0),uPolarizedIntensity:ui(0),uAstroTrail:ui(1)};
 const postMaterial=new THREE.RawShaderMaterial({glslVersion:THREE.GLSL3,vertexShader:vert,fragmentShader:postFrag,uniforms:PU,depthTest:false,depthWrite:false}),postMesh=new THREE.Mesh(geometry,postMaterial);postMesh.frustumCulled=false;postScene.add(postMesh);
 const accumScene=new THREE.Scene(),AU={uCurrent:uf(null),uPrevious:uf(null),uBlend:uf(.92)};const accumMaterial=new THREE.RawShaderMaterial({glslVersion:THREE.GLSL3,vertexShader:vert,fragmentShader:accumFrag,uniforms:AU,depthTest:false,depthWrite:false}),accumMesh=new THREE.Mesh(geometry,accumMaterial);accumMesh.frustumCulled=false;accumScene.add(accumMesh);
 
@@ -306,7 +328,7 @@ let rtCurrent,rtA,rtB,historyFlip=false,historyValid=false,renderW=1,renderH=1;c
 function makeRT(w,h){return new THREE.WebGLRenderTarget(w,h,{type:THREE.HalfFloatType,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,depthBuffer:false,stencilBuffer:false});}
 function rebuildTargets(){renderer.setRenderTarget(null);AU.uCurrent.value=null;AU.uPrevious.value=null;PU.uCurrent.value=null;PU.uHistory.value=null;renderer.resetState();if(rtCurrent)retiredTargets.push({current:rtCurrent,a:rtA,b:rtB,frames:4});rtCurrent=makeRT(renderW,renderH);rtA=makeRT(renderW,renderH);rtB=makeRT(renderW,renderH);historyFlip=false;historyValid=false;renderer.setRenderTarget(rtA);renderer.clear();renderer.setRenderTarget(rtB);renderer.clear();renderer.setRenderTarget(null);renderer.resetState();}
 
-const state={yaw:-.12,pitch:THREE.MathUtils.degToRad(27),distance:42,fov:.78,panX:0,panY:0,targetYaw:-.12,targetPitch:THREE.MathUtils.degToRad(27),targetDistance:42,targetFov:.78,targetPanX:0,targetPanY:0,time:15,timeScale:120/60,paused:false,mode:0,renderScale:.75,adaptiveScale:1,movingUntil:0,flareStart:15,hotDir:1,fps:60,quality:'medium',baseSteps:84};
+const state={yaw:-.12,pitch:THREE.MathUtils.degToRad(27),distance:42,fov:.78,panX:0,panY:0,targetYaw:-.12,targetPitch:THREE.MathUtils.degToRad(27),targetDistance:42,targetFov:.78,targetPanX:0,targetPanY:0,time:15,timeScale:120/60,paused:false,mode:0,object:0,renderScale:.75,adaptiveScale:1,movingUntil:0,flareStart:15,hotDir:1,fps:60,quality:'medium',baseSteps:84};
 const camPos=new THREE.Vector3(),forward=new THREE.Vector3(),right=new THREE.Vector3(),up=new THREE.Vector3(),worldUp=new THREE.Vector3(0,0,1),tmp=new THREE.Vector3();
 function updateCamera(){state.yaw+=(state.targetYaw-state.yaw)*.085;state.pitch+=(state.targetPitch-state.pitch)*.085;state.distance+=(state.targetDistance-state.distance)*.09;state.fov+=(state.targetFov-state.fov)*.09;state.panX+=(state.targetPanX-state.panX)*.09;state.panY+=(state.targetPanY-state.panY)*.09;/* Astronomical inclination is measured from the spin axis: 0° is face-on and 90° is edge-on. */let si=Math.sin(state.pitch);camPos.set(Math.sin(state.yaw)*si,-Math.cos(state.yaw)*si,Math.cos(state.pitch)).multiplyScalar(state.distance);forward.copy(camPos).multiplyScalar(-1).normalize();right.crossVectors(forward,worldUp);if(right.lengthSq()<.001)right.set(1,0,0);else right.normalize();up.crossVectors(right,forward).normalize();U.uCamPos.value.copy(camPos);U.uCamForward.value.copy(forward);U.uCamRight.value.copy(right);U.uCamUp.value.copy(up);U.uFov.value=state.fov;U.uPan.value.set(state.panX,state.panY,0);}
 
@@ -315,20 +337,37 @@ const ranges={spin:['uSpin',2,''],inclination:[null,0,'°'],positionAngle:['uPos
 for(const id in ranges){const el=$(id),out=el.parentElement.querySelector('output'),cfg=ranges[id];const update=()=>{let v=parseFloat(el.value);out.value=v.toFixed(cfg[1])+cfg[2];if(cfg[0]){if(cfg[0]==='uPositionAngle')U[cfg[0]].value=THREE.MathUtils.degToRad(v);else U[cfg[0]].value=v}applySpecial(id,v);markMoving(250)};el.addEventListener('input',update);update()}
 function applySpecial(id,v){if(id==='inclination'){state.targetPitch=THREE.MathUtils.degToRad(v);U.uInclination.value=state.targetPitch;PU.uInclination.value=state.targetPitch;$('rIncl').textContent=v.toFixed(0)+'°'}else if(id==='spin')$('rSpin').textContent=(v>=0?'+':'')+v.toFixed(2)+' model';else if(id==='hotPeriod'){U.uHotPeriod.value=v/10;PU.uHotPeriod.value=v/10;$('gPeriod').textContent=v.toFixed(0)+' min'}else if(id==='hotRadius')PU.uHotRadius.value=v;else if(id==='timeScale'){state.timeScale=v/60;$('rTime').textContent=v.toFixed(0)+'×'}else if(id==='exposureTime')PU.uExposureTime.value=v;else if(id==='timeAverage'){PU.uAverage.value=v;AU.uBlend.value=v}else if(id==='scattering')PU.uScattering.value=v;else if(id==='resolution')PU.uInstrument.value=v;else if(id==='bloom')PU.uBloom.value=v;else if(id==='exposure')PU.uExposure.value=v;else if(id==='grain')PU.uGrain.value=v;else if(id==='renderScale'){state.renderScale=v;resize()}else if(id==='toroidal')PU.uToroidal.value=v;else if(id==='poloidal')PU.uPoloidal.value=v;else if(id==='fieldCoherence')PU.uFieldCoherence.value=v;else if(id==='faraday')PU.uFaraday.value=v;else if(id==='polFraction')PU.uPolFraction.value=v;else if(id==='polDensity')PU.uPolDensity.value=v}
 function bindSelect(id,fn){$(id).addEventListener('change',()=>{fn($(id).value);markMoving(350)})}
-bindSelect('flowDirection',v=>U.uFlowDir.value=+v);bindSelect('flowState',v=>U.uFlowState.value=+v);bindSelect('quality',setQuality);bindSelect('obsMode',v=>setMode(+v));bindSelect('toneMapping',v=>PU.uTone.value=+v);bindSelect('palette',v=>PU.uPalette.value=+v);
+bindSelect('objectModel',v=>selectObject(+v));bindSelect('flowDirection',v=>U.uFlowDir.value=+v);bindSelect('flowState',v=>U.uFlowState.value=+v);bindSelect('quality',setQuality);bindSelect('obsMode',v=>setMode(+v));bindSelect('toneMapping',v=>PU.uTone.value=+v);bindSelect('palette',v=>PU.uPalette.value=+v);
 const checks={hotspot:['uHotspot',U],polarization:['uPolarization',PU],artifacts:['uArtifacts',PU],ehtCompare:['uCompare',PU],polarizedIntensity:['uPolarizedIntensity',PU],astroTrail:['uAstroTrail',PU],glare:['uGlare',PU],aberration:['uAberration',PU]};
 for(const id in checks){const el=$(id),[key,obj]=checks[id];const update=()=>{obj[key].value=el.checked?1:0;if(id==='ehtCompare')$('compareLabel').style.display=el.checked?'inline':'none'};el.addEventListener('change',update);update()}
 
 function setQuality(v){state.quality=v;const map={low:64,medium:84,high:128,ultra:176};state.baseSteps=map[v];U.uSteps.value=state.baseSteps;markMoving(500)}
-function setMode(mode){state.mode=mode;U.uMode.value=mode;PU.uMode.value=mode;$('obsMode').value=mode;body.classList.remove('mode-cinematic','mode-eht','mode-gravity');body.classList.add(['mode-cinematic','mode-eht','mode-gravity'][mode]);const names=['Cinematic','EHT 230 GHz','GRAVITY NIR'];$('rMode').textContent=names[mode];document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',+b.dataset.mode===mode));historyFlip=false;historyValid=false;markMoving(700)}
+function setMode(mode){if(state.object===1&&mode!==0)mode=0;state.mode=mode;U.uMode.value=mode;PU.uMode.value=mode;$('obsMode').value=mode;body.classList.remove('mode-cinematic','mode-eht','mode-gravity');body.classList.add(['mode-cinematic','mode-eht','mode-gravity'][mode]);const names=['Cinematic','EHT 230 GHz','GRAVITY NIR'];$('rMode').textContent=names[mode];document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',+b.dataset.mode===mode));if(mode===2&&U.uHotspot.value===0){$('hotspot').checked=true;$('hotspot').dispatchEvent(new Event('change'));state.flareStart=state.time}historyFlip=false;historyValid=false;markMoving(700)}
 document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode)));
+
+// The targets are deliberately separate physical regimes. Sgr A* retains a
+// geometrically thick RIAF. The notional 10^8 M_sun target uses a radiation-
+// supported, optically thick H/R~0.1 disk at lambda_Edd=0.8 and a plausible
+// high (but not extremal) model spin, giving the classic NASA/DNGR geometry.
+const objectMeta=[
+  {title:'SAGITTARIUS A*',subtitle:'Galactic Centre Black Hole',eyebrow:'Observed target · model',mass:'4.3 million M☉',contextLabel:'Distance',context:'27,000 ly',hint:'Observed Galactic Centre target. Thick, optically thin, radiatively inefficient flow; EHT and GRAVITY modes available.',seeing:'Sgr A* evolves over minutes. Its dim, optically thin, geometrically thick RIAF is shown at the low inclination favoured by current EHT model comparisons; spin remains uncertain.',chip:'Kerr-inspired · not GRMHD',preset:'earth'},
+  {title:'LUMINOUS SMBH',subtitle:'Near-Eddington thin/slim-disk model',eyebrow:'Notional target · model',mass:'100 million M☉',contextLabel:'Eddington ratio',context:'0.80 L_Edd',hint:'Notional luminous AGN. Optically thick H/R≈0.10 photosphere with NASA/Interstellar-style lensing; colour is bolometric false-colour.',seeing:'A 100-million-solar-mass, high-spin model accretes near the Eddington limit. Its optically thick radiation-supported disk forms a direct equatorial band plus lensed rear images. The warm palette is bolometric false-colour: a real disk this massive peaks mainly in the ultraviolet.',chip:'Bolometric false-colour · Kerr-inspired',preset:'luminous'}
+];
+function captureControlState(){const saved={};document.querySelectorAll('#controls input[id],#controls select[id]').forEach(el=>{if(el.id!=='objectModel')saved[el.id]=el.type==='checkbox'?el.checked:el.value});return saved}
+const sgrDefaults=captureControlState();
+const luminousDefaults={...sgrDefaults,spin:'.95',inclination:'78',positionAngle:'-4',flowDirection:'1',quality:'high',ringOrder:'3',frameDrag:'1',shadowScale:'1',flowBrightness:'.84',density:'1.10',temperature:'1.48',thickness:'.52',innerRadius:'1.9',outerRadius:'22',rotationSpeed:'1',turbulence:'.26',magCoherence:'.82',flowState:'1',densitySlope:'.82',emissivityFalloff:'.62',doppler:'1',redshift:'1',hotspot:false,hotRadius:'4.4',hotPeriod:'525',hotBrightness:'1.6',hotLifetime:'2.2',hotShear:'.35',hotCooling:'.5',trailLength:'.28',polarization:false,obsMode:'0',exposureTime:'.12',timeScale:'240',palette:'0',bloom:'.86',toneMapping:'0',exposure:'1.02',background:'.64',dust:'.58',grain:'.008',glare:true,aberration:false,renderScale:'.75'};
+const objectStates=[{...sgrDefaults},{...luminousDefaults}];let switchingObject=false;
+function applyControlState(saved){switchingObject=true;for(const id in saved){const el=$(id);if(!el)continue;if(el.type==='checkbox'){el.checked=!!saved[id];el.dispatchEvent(new Event('change'))}else{el.value=saved[id];el.dispatchEvent(new Event(el.tagName==='SELECT'?'change':'input'))}}switchingObject=false}
+function updateObjectUI(model){const m=objectMeta[model];$('modelTitle').textContent=m.title;$('modelSubtitle').textContent=m.subtitle;$('modelEyebrow').textContent=m.eyebrow;$('rMass').textContent=m.mass;$('rContextLabel').textContent=m.contextLabel;$('rContext').textContent=m.context;$('objectHint').textContent=m.hint;$('modelSeeing').textContent=m.seeing;$('modelChip').textContent=m.chip;$('thicknessLabel').textContent=model?'Disk thickness':'Torus thickness';$('flowStateLabel').textContent=model?'Disk structure':'Magnetic state';const opts=$('flowState').options;if(model){opts[0].text='Turbulent MRI';opts[1].text='Coherent spiral arms'}else{opts[0].text='SANE-like · turbulent';opts[1].text='MAD-like · organized arcs'}document.title=model?'Near-Eddington SMBH — Relativistic Observatory':'Sagittarius A* — Relativistic Observatory';canvas.setAttribute('aria-label',model?'Interactive ray-traced view of a near-Eddington supermassive black hole':'Interactive ray-traced view of Sagittarius A star');document.querySelectorAll('[data-mode="1"],[data-mode="2"]').forEach(el=>{el.disabled=!!model;el.title=model?'Calibrated specifically for Sagittarius A*':''});$('obsMode').options[1].disabled=!!model;$('obsMode').options[2].disabled=!!model}
+function selectObject(model,resetDefaults=false){model=model?1:0;if(!switchingObject&&state.object!==model)objectStates[state.object]=captureControlState();if(resetDefaults)objectStates[model]={...(model?luminousDefaults:sgrDefaults)};state.object=model;U.uObject.value=model;PU.uObject.value=model;$('objectModel').value=String(model);updateObjectUI(model);applyControlState(objectStates[model]);cameraPreset(objectMeta[model].preset);if(model)setMode(0);historyFlip=false;historyValid=false;markMoving(1700)}
 function triggerFlare(){state.flareStart=state.time;U.uHotAge.value=0;U.uHotPhase.value=Math.random()*Math.PI*2;PU.uHotPhase.value=U.uHotPhase.value;const r=5.1+Math.random()*1.5;U.uHotRadius.value=r;PU.uHotRadius.value=r;$('hotRadius').value=r;$('hotRadius').dispatchEvent(new Event('input'));U.uHotBrightness.value=1.8+Math.random()*1.6;$('hotBrightness').value=U.uHotBrightness.value;$('hotBrightness').dispatchEvent(new Event('input'));$('hotspot').checked=true;U.uHotspot.value=1;markMoving(200)}
 $('triggerFlare').addEventListener('click',triggerFlare);$('hotDirection').addEventListener('click',()=>{state.hotDir*=-1;U.uHotDir.value=state.hotDir;$('hotDirection').textContent=state.hotDir>0?'Prograde orbit':'Retrograde orbit'});
 
-const presets={earth:[-.12,27,42,.78,0,0],face:[-.1,6,44,.8,0,0],45:[-.25,45,43,.8,0,0],edge:[-.18,84,40,.46,0,0],polar:[1.1,1,44,.8,0,0],close:[-.12,27,38,.47,0,0],wide:[-.12,27,76,1.12,.08,-.02]};
-function cameraPreset(name){const p=presets[name];state.targetYaw=p[0];state.targetPitch=THREE.MathUtils.degToRad(p[1]);state.targetDistance=p[2];state.targetFov=p[3];state.targetPanX=p[4];state.targetPanY=p[5];$('inclination').value=p[1];$('inclination').dispatchEvent(new Event('input'));markMoving(1500)}
+const presets={earth:[-.12,27,42,.78,0,0],luminous:[-.10,78,54,1.02,0,0],face:[-.1,6,44,.8,0,0],45:[-.25,45,43,.8,0,0],edge:[-.18,84,40,.46,0,0],polar:[1.1,1,44,.8,0,0],close:[-.12,27,38,.47,0,0],wide:[-.12,27,76,1.12,.08,-.02],luminousFace:[-.1,6,58,1.12,0,0],luminous45:[-.25,45,56,1.04,0,0],luminousEdge:[-.18,84,52,.72,0,0],luminousPolar:[1.1,1,58,1.12,0,0],luminousClose:[-.10,78,48,.66,0,0],luminousWide:[-.10,78,88,1.38,.04,-.01]};
+const luminousPresetMap={earth:'luminous',face:'luminousFace',45:'luminous45',edge:'luminousEdge',polar:'luminousPolar',close:'luminousClose',wide:'luminousWide'};
+function cameraPreset(name){if(state.object===1&&luminousPresetMap[name])name=luminousPresetMap[name];const p=presets[name];state.targetYaw=p[0];state.targetPitch=THREE.MathUtils.degToRad(p[1]);state.targetDistance=p[2];state.targetFov=p[3];state.targetPanX=p[4];state.targetPanY=p[5];$('inclination').value=p[1];$('inclination').dispatchEvent(new Event('input'));markMoving(1500)}
 document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>cameraPreset(b.dataset.preset)));
-function reset(){cameraPreset('earth');setMode(0);state.time=15;state.flareStart=15;state.paused=false;$('hotspot').checked=false;$('hotspot').dispatchEvent(new Event('change'));markMoving(700)}
+function reset(){selectObject(state.object,true);state.time=15;state.flareStart=15;state.paused=false;$('hotspot').checked=false;$('hotspot').dispatchEvent(new Event('change'));markMoving(700)}
 
 let dragging=false,shiftPan=false,lastX=0,lastY=0,vx=0,vy=0,pinchDistance=0;
 function markMoving(ms=250){state.movingUntil=performance.now()+ms;historyValid=false}
@@ -336,10 +375,10 @@ canvas.addEventListener('pointerdown',e=>{dragging=true;shiftPan=e.shiftKey;last
 canvas.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;vx=dx;vy=dy;if(shiftPan){state.targetPanX-=dx/innerHeight*state.fov;state.targetPanY+=dy/innerHeight*state.fov;state.targetPanX=THREE.MathUtils.clamp(state.targetPanX,-.28,.28);state.targetPanY=THREE.MathUtils.clamp(state.targetPanY,-.2,.2)}else{state.targetYaw-=dx*.004;state.targetPitch=THREE.MathUtils.clamp(state.targetPitch+dy*.0035,.01,1.553);$('inclination').value=THREE.MathUtils.radToDeg(state.targetPitch);$('inclination').dispatchEvent(new Event('input'))}markMoving(600)});
 canvas.addEventListener('pointerup',()=>{dragging=false;markMoving(700)});canvas.addEventListener('pointercancel',()=>dragging=false);
 canvas.addEventListener('wheel',e=>{e.preventDefault();state.targetFov=THREE.MathUtils.clamp(state.targetFov*Math.exp(e.deltaY*.0008),.42,2.1);markMoving(700)},{passive:false});
-canvas.addEventListener('dblclick',()=>cameraPreset('earth'));
+canvas.addEventListener('dblclick',()=>cameraPreset(objectMeta[state.object].preset));
 canvas.addEventListener('touchstart',e=>{if(e.touches.length===2)pinchDistance=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});
 canvas.addEventListener('touchmove',e=>{if(e.touches.length===2){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinchDistance)state.targetFov=THREE.MathUtils.clamp(state.targetFov*pinchDistance/d,.42,2.1);pinchDistance=d;markMoving(700)}},{passive:true});
-window.addEventListener('keydown',e=>{if(['INPUT','SELECT'].includes(document.activeElement.tagName))return;if(e.code==='Space'){e.preventDefault();state.paused=!state.paused}else if(e.key.toLowerCase()==='h')body.classList.toggle('hidden-ui');else if(e.key.toLowerCase()==='r')reset();else if(e.key.toLowerCase()==='f')triggerFlare();else if('123'.includes(e.key))setMode(+e.key-1)});
+window.addEventListener('keydown',e=>{if(['INPUT','SELECT'].includes(document.activeElement.tagName))return;if(e.code==='Space'){e.preventDefault();state.paused=!state.paused}else if(e.key.toLowerCase()==='h')body.classList.toggle('hidden-ui');else if(e.key.toLowerCase()==='r')reset();else if(e.key.toLowerCase()==='f')triggerFlare();else if(e.key.toLowerCase()==='b')selectObject(1-state.object);else if('123'.includes(e.key))setMode(+e.key-1)});
 
 $('collapseControls').addEventListener('click',()=>{const c=$('controls');c.classList.toggle('collapsed');$('collapseControls').textContent=c.classList.contains('collapsed')?'Show':'Hide'});function setMobileControls(open){$('controls').classList.toggle('open',open);body.classList.toggle('controls-open',open);$('controlsToggleMobile').setAttribute('aria-expanded',open?'true':'false')}$('controlsToggleMobile').setAttribute('aria-expanded','false');$('controlsToggleMobile').addEventListener('click',()=>setMobileControls(true));$('closeControls').addEventListener('click',()=>setMobileControls(false));
 
