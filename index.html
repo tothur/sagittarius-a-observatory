@@ -69,7 +69,7 @@ button,select{appearance:none;color:var(--ink);background:rgba(21,28,29,.76);bor
       <div class="control"><label for="turbulence">Turbulence</label><input id="turbulence" type="range" min="0" max="2" step=".01" value=".92"><output></output></div>
       <div class="control"><label for="magCoherence">Mag. coherence</label><input id="magCoherence" type="range" min="0" max="1" step=".01" value=".7"><output></output></div>
       <div class="control"><label id="flowStateLabel" for="flowState">Magnetic state</label><select id="flowState"><option value="0" selected>SANE-like · turbulent</option><option value="1">MAD-like · organized arcs</option></select></div>
-      <div class="control"><label for="densitySlope">Density slope</label><input id="densitySlope" type="range" min=".2" max="3" step=".01" value="1.25"><output></output></div>
+      <div class="control"><label id="densitySlopeLabel" for="densitySlope">Density slope</label><input id="densitySlope" type="range" min=".2" max="3" step=".01" value="1.25"><output></output></div>
       <div class="control"><label for="emissivityFalloff">Emissivity falloff</label><input id="emissivityFalloff" type="range" min=".3" max="3" step=".01" value="1.4"><output></output></div>
       <div class="control"><label for="doppler">Doppler boost</label><input id="doppler" type="range" min="0" max="1.5" step=".01" value=".82"><output></output></div>
       <div class="control"><label for="redshift">Grav. redshift</label><input id="redshift" type="range" min="0" max="1.5" step=".01" value="1"><output></output></div>
@@ -194,15 +194,20 @@ float torusDensity(vec3 p,float localT,out float filament){
   float thickOuter=exp(-pow(max(R-uInner,0.)/max(uOuter-uInner,1.),2.)*2.7);
   float thickRadial=(softInner+diffuse)*thickOuter*pow(max(R/uInner,1.),-uDensitySlope);
   float thinInner=smoothstep(uInner-.15,uInner+.48,R);float thinOuter=exp(-pow(max(R-uOuter,0.)/2.8,2.));
-  float thinRadial=thinInner*thinOuter*pow(max(R/uInner,1.),-.72*uDensitySlope);
+  // In the opaque target this control is a surface-density slope. Keep its
+  // radial effect physical but bounded: it must not turn the photosphere into
+  // transparent ray-march shells at the high end of the UI range.
+  float thinRadial=thinInner*thinOuter*pow(max(R/uInner,1.),-(.25+.18*uDensitySlope));
   float radial=mix(thickRadial,thinRadial,thin);
-  float vertical=mix(exp(-.5*pow(abs(z)/h,1.75)),exp(-pow(abs(z)/max(h,.015),3.2)),thin);
+  float vertical=mix(exp(-.5*pow(abs(z)/h,1.75)),exp(-pow(abs(z)/max(h,.015),2.4)),thin);
   if(radial*vertical<.001){filament=0.;return 0.;}
   float om=float(uFlowDir)*uRotation/max(pow(R,1.5)+float(uFlowDir)*uSpin,.42);float adv=ph-om*localT;
   vec3 q=vec3(R*.34*cos(adv),R*.34*sin(adv),z*.72);float w1=fbm(q*.82+vec3(0,0,localT*.012));
   vec3 warped=q+(vec3(w1,noise3(q*1.7+9.7),noise3(q*2.3+17.3))-.5)*(1.4+1.7*uTurbulence);
   float n=fbm(warped*1.55+vec3(0,0,localT*.021));float fine=noise3(warped*5.1+vec3(localT*.018,0,0));
-  float spiral=.5+.5*sin((uFlowState==1?2.5:4.5)*adv-(uFlowState==1?4.2:7.2)*log(R)+4.1*w1);
+  // Azimuthal magnetic modes must be integers. Half-integer modes changed sign
+  // at atan's -PI/PI wrap and produced a sharp seam through every lensed image.
+  float spiral=.5+.5*sin((uFlowState==1?2.:4.)*adv-(uFlowState==1?4.2:7.2)*log(R)+4.1*w1);
   float arcs=pow(smoothstep(.34,.94,spiral),1.4)*mix(.5,1.65,uMagCoherence);
   float thickOrganized=mix(.35+.95*n*n,.25+1.55*arcs*(.45+.8*n),float(uFlowState));
   float thinOrganized=.76+.20*n+.24*arcs*uMagCoherence;
@@ -221,10 +226,13 @@ vec4 hotspotEmission(vec3 p,float pathTime){
 }
 void main(){
   vec2 uv=(gl_FragCoord.xy-.5*uResolution)/uResolution.y;uv=rot(uPositionAngle)*uv;uv+=uPan.xy;
-  // Temporal sub-step jitter suppresses banding. Near-critical Ultra paths are
-  // very sensitive to affine-step perturbations, so reduce the jitter amplitude
-  // as the selected ray budget approaches 176 steps.
-  float jitter=(fract(hash11(dot(gl_FragCoord.xy,vec2(1.,113.))+uFrame*17.))-.5)*mix(1.,.24,smoothstep(96.,176.,float(uSteps)));
+  // Sub-step jitter suppresses coherent integration shells. Ultra uses mostly
+  // stable spatial jitter: the tiny temporal remainder refines instead of
+  // making near-critical paths flicker or progressively lose brightness.
+  float jitterSpatial=hash11(dot(gl_FragCoord.xy,vec2(1.,113.)))-.5;
+  float jitterTemporal=hash11(dot(gl_FragCoord.xy,vec2(1.,113.))+uFrame*17.)-.5;
+  float ultraJitter=smoothstep(96.,176.,float(uSteps));
+  float jitter=mix(jitterTemporal,jitterSpatial*.82+jitterTemporal*.18,ultraJitter);
   vec3 ro=uCamPos,rd=normalize(uCamForward+uCamRight*uv.x*uFov+uCamUp*uv.y*uFov);
   // The astronomical camera is kept outside the emitting flow. Rays are advanced analytically to a strong-field bounding sphere so distant empty space costs no integration steps.
   float boundR=max(24.,uOuter+6.);float rayB=dot(ro,rd),rayC=dot(ro,ro)-boundR*boundR,rayDisc=rayB*rayB-rayC;
@@ -267,19 +275,27 @@ void main(){
         // Near-Eddington emission is photospheric rather than transparent volume
         // emission. A limb factor and higher absorption make the first disk
         // crossing dominate while geodesics still create the rear/secondary arcs.
-        float limb=.48+.52*sqrt(abs(v.z));float emThin=den*(.22+1.28*temp)*limb*fall*(.68+.32*fil);
+        // For the opaque disk, emergent intensity is set mainly by the
+        // temperature at tau~1, not linearly by volume density. Sublinear
+        // density response preserves a continuous photosphere as slope varies.
+        float limb=.48+.52*sqrt(abs(v.z));float thinColumn=sqrt(max(den,0.));float emThin=thinColumn*(.22+1.28*temp)*limb*fall*(.68+.32*fil);
         float em=mix(emThick,emThin,thin);
         float nearCritical=exp(-pow((r-3.)/.72,2.))*(1.-smoothstep(.08,.72,abs(dr)));float order=min(float(uRingOrder),turning+nearCritical*2.);
         em*=1.+nearCritical*order*mix(.48,.90,edgeView)+edgeView*.16*min(turning,2.);float signal=em*boost*uBrightness*(.55+.72*fil);
         vec3 c=palette(signal*(1.4+temp*g));radiance+=(1.-alpha)*c*signal*stepLen*mix(7.,4.8,thin);
-        vec4 hs=hotspotEmission(p,travel);radiance+=(1.-alpha)*hs.rgb*stepLen*.31;alpha+=den*stepLen*mix(.011,.14,thin)+hs.a*stepLen*.024;if(alpha>.985)break;
+        float opacity=mix(den*.011,thinColumn*.12,thin);
+        vec4 hs=hotspotEmission(p,travel);radiance+=(1.-alpha)*hs.rgb*stepLen*.31;alpha+=opacity*stepLen+hs.a*stepLen*.024;if(alpha>.985)break;
       }
     }
   }
   // Rays still trapped in the strong field when the bounded step budget ends
   // represent a narrow near-critical set. Attenuating their accumulated volume
   // prevents finite-step residence time from becoming a nonphysical bright fan.
-  if(!captured&&!escaped)radiance*=mix(.52,.28,smoothstep(64.,140.,float(uSteps)));
+  // A finite-budget near-critical ray is attenuated only for the transparent
+  // RIAF, where excess residence time can over-integrate volume emissivity. An
+  // opaque foreground photosphere has already established its emergent light;
+  // dimming it based on the ray's later classification creates false wedges.
+  if(!captured&&!escaped)radiance*=mix(mix(.52,.28,smoothstep(64.,140.,float(uSteps))),1.,float(uObject));
   if(escaped){radiance+=(1.-alpha)*background(normalize(v))*bgGain*mix(.24,1.,smoothstep(2.2,4.4,minR));}
   // Capture stays genuinely black except for foreground optically thin plasma integrated before horizon crossing.
   float edgeShadow=smoothstep(1.22,1.5,uInclination);/* At high inclination the finite step budget can miss marginal captures; minR supplies a conservative geodesic-derived shadow fallback for the optically thin Sgr A* flow. It is disabled for the opaque disk so foreground photospheric light is never erased. */float captureProxy=horizon+edgeShadow*.35;float shadowR=1.-smoothstep(captureProxy,captureProxy+.42,minR);radiance*=1.-shadowR*mix(.88,.96,edgeShadow)*(1.-float(uObject));
@@ -362,7 +378,7 @@ const sgrDefaults=captureControlState();
 const luminousDefaults={...sgrDefaults,spin:'.95',inclination:'78',positionAngle:'-4',flowDirection:'1',quality:'high',ringOrder:'3',frameDrag:'1',shadowScale:'1',flowBrightness:'.84',density:'1.10',temperature:'1.48',thickness:'.52',innerRadius:'1.9',outerRadius:'22',rotationSpeed:'1',turbulence:'.26',magCoherence:'.82',flowState:'1',densitySlope:'.82',emissivityFalloff:'.62',doppler:'1',redshift:'1',hotspot:false,hotRadius:'4.4',hotPeriod:'525',hotBrightness:'1.6',hotLifetime:'2.2',hotShear:'.35',hotCooling:'.5',trailLength:'.28',polarization:false,obsMode:'0',exposureTime:'.12',timeScale:'240',palette:'0',bloom:'.86',toneMapping:'0',exposure:'1.02',background:'.64',dust:'.58',grain:'.008',glare:true,aberration:false,renderScale:'.75'};
 const objectStates=[{...sgrDefaults},{...luminousDefaults}];let switchingObject=false;
 function applyControlState(saved){switchingObject=true;for(const id in saved){const el=$(id);if(!el)continue;if(el.type==='checkbox'){el.checked=!!saved[id];el.dispatchEvent(new Event('change'))}else{el.value=saved[id];el.dispatchEvent(new Event(el.tagName==='SELECT'?'change':'input'))}}switchingObject=false}
-function updateObjectUI(model){const m=objectMeta[model];$('modelTitle').textContent=m.title;$('modelSubtitle').textContent=m.subtitle;$('modelEyebrow').textContent=m.eyebrow;$('rMass').textContent=m.mass;$('rContextLabel').textContent=m.contextLabel;$('rContext').textContent=m.context;$('objectHint').textContent=m.hint;$('modelSeeing').textContent=m.seeing;$('modelChip').textContent=m.chip;$('thicknessLabel').textContent=model?'Disk thickness':'Torus thickness';$('flowStateLabel').textContent=model?'Disk structure':'Magnetic state';const opts=$('flowState').options;if(model){opts[0].text='Turbulent MRI';opts[1].text='Coherent spiral arms'}else{opts[0].text='SANE-like · turbulent';opts[1].text='MAD-like · organized arcs'}document.title=model?'Near-Eddington SMBH — Relativistic Observatory':'Sagittarius A* — Relativistic Observatory';canvas.setAttribute('aria-label',model?'Interactive ray-traced view of a near-Eddington supermassive black hole':'Interactive ray-traced view of Sagittarius A star');document.querySelectorAll('[data-mode="1"],[data-mode="2"]').forEach(el=>{el.disabled=!!model;el.title=model?'Calibrated specifically for Sagittarius A*':''});$('obsMode').options[1].disabled=!!model;$('obsMode').options[2].disabled=!!model}
+function updateObjectUI(model){const m=objectMeta[model];$('modelTitle').textContent=m.title;$('modelSubtitle').textContent=m.subtitle;$('modelEyebrow').textContent=m.eyebrow;$('rMass').textContent=m.mass;$('rContextLabel').textContent=m.contextLabel;$('rContext').textContent=m.context;$('objectHint').textContent=m.hint;$('modelSeeing').textContent=m.seeing;$('modelChip').textContent=m.chip;$('thicknessLabel').textContent=model?'Disk thickness':'Torus thickness';$('flowStateLabel').textContent=model?'Disk structure':'Magnetic state';$('densitySlopeLabel').textContent=model?'Surface-density slope':'Density slope';const opts=$('flowState').options;if(model){opts[0].text='Turbulent MRI';opts[1].text='Coherent spiral arms'}else{opts[0].text='SANE-like · turbulent';opts[1].text='MAD-like · organized arcs'}document.title=model?'Near-Eddington SMBH — Relativistic Observatory':'Sagittarius A* — Relativistic Observatory';canvas.setAttribute('aria-label',model?'Interactive ray-traced view of a near-Eddington supermassive black hole':'Interactive ray-traced view of Sagittarius A star');document.querySelectorAll('[data-mode="1"],[data-mode="2"]').forEach(el=>{el.disabled=!!model;el.title=model?'Calibrated specifically for Sagittarius A*':''});$('obsMode').options[1].disabled=!!model;$('obsMode').options[2].disabled=!!model}
 function selectObject(model,resetDefaults=false){model=model?1:0;if(!switchingObject&&state.object!==model)objectStates[state.object]=captureControlState();if(resetDefaults)objectStates[model]={...(model?luminousDefaults:sgrDefaults)};state.object=model;U.uObject.value=model;PU.uObject.value=model;$('objectModel').value=String(model);updateObjectUI(model);applyControlState(objectStates[model]);cameraPreset(objectMeta[model].preset);if(model)setMode(0);historyFlip=false;historyValid=false;markMoving(1700)}
 function triggerFlare(){state.flareStart=state.time;U.uHotAge.value=0;U.uHotPhase.value=Math.random()*Math.PI*2;PU.uHotPhase.value=U.uHotPhase.value;const r=5.1+Math.random()*1.5;U.uHotRadius.value=r;PU.uHotRadius.value=r;$('hotRadius').value=r;$('hotRadius').dispatchEvent(new Event('input'));U.uHotBrightness.value=1.8+Math.random()*1.6;$('hotBrightness').value=U.uHotBrightness.value;$('hotBrightness').dispatchEvent(new Event('input'));$('hotspot').checked=true;U.uHotspot.value=1;markMoving(200)}
 $('triggerFlare').addEventListener('click',triggerFlare);$('hotDirection').addEventListener('click',()=>{state.hotDir*=-1;U.uHotDir.value=state.hotDir;$('hotDirection').textContent=state.hotDir>0?'Prograde orbit':'Retrograde orbit'});
