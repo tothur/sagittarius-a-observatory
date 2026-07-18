@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030405">
+<title>Sagittarius A* — Relativistic Observatory</title>
+<style>
+:root{color-scheme:dark;--ink:#edf3f3;--muted:#91a0a3;--line:rgba(190,220,220,.16);--glass:rgba(5,9,10,.72);--amber:#ffb45a;--cyan:#8ed8d7}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--ink);font:12px/1.35 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overscroll-behavior:none}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}canvas:active{cursor:grabbing}
+#loading{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:radial-gradient(circle at 50% 50%,#181008 0,#060606 28%,#000 68%);transition:opacity .8s ease,visibility .8s}
+#loading.done{opacity:0;visibility:hidden}.loader{text-align:center;letter-spacing:.24em;text-transform:uppercase;color:#d9c7ad}.loader-ring{width:82px;height:82px;margin:0 auto 22px;border-radius:50%;border:1px solid #3b2b21;box-shadow:0 0 22px #c66d2a,inset 0 0 18px #000;position:relative;animation:pulse 1.8s ease-in-out infinite}.loader-ring:after{content:"";position:absolute;inset:20px;border-radius:50%;background:#000;box-shadow:0 -9px 16px #ff9d45}.loader small{display:block;margin-top:8px;color:#857a6e;letter-spacing:.14em}@keyframes pulse{50%{filter:brightness(1.8);transform:scale(1.04)}}
+#error{display:none;position:fixed;z-index:100;inset:20%;place-items:center;text-align:center;padding:30px;background:#130d0b;border:1px solid #a65b44;border-radius:12px;font-size:15px}
+.ui{position:fixed;z-index:10;transition:opacity .25s,transform .25s}.hidden-ui .ui{opacity:0;pointer-events:none}.panel{background:linear-gradient(145deg,rgba(10,14,15,.82),rgba(3,5,6,.62));border:1px solid var(--line);box-shadow:0 12px 45px rgba(0,0,0,.34);backdrop-filter:blur(16px) saturate(120%);-webkit-backdrop-filter:blur(16px) saturate(120%)}
+#info{left:18px;top:18px;width:248px;padding:16px 17px;border-radius:10px}.eyebrow{font-size:9px;letter-spacing:.28em;color:var(--amber);text-transform:uppercase}.title{font:600 20px/1.05 Georgia,"Times New Roman",serif;letter-spacing:.12em;margin:5px 0 3px}.subtitle{color:#a7b0b0;margin-bottom:13px}.readout{display:grid;grid-template-columns:1fr auto;gap:4px 12px;color:var(--muted);font-variant-numeric:tabular-nums}.readout b{color:#e1e7e7;font-weight:500;text-align:right}.mode-tabs{display:flex;gap:4px;margin-top:13px}.mode-tabs button{flex:1;padding:7px 4px;font-size:9px;letter-spacing:.08em}
+button,select{appearance:none;color:var(--ink);background:rgba(21,28,29,.76);border:1px solid var(--line);border-radius:6px;font:inherit;outline:none}button{cursor:pointer;padding:7px 9px;transition:.18s}button:hover,button.active{background:rgba(111,125,119,.23);border-color:rgba(255,190,110,.46)}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+#controls{right:14px;top:14px;bottom:14px;width:305px;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}#controls.collapsed{bottom:auto;height:49px}.controls-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:.18em;text-transform:uppercase}.controls-head button{padding:4px 8px}.controls-scroll{padding:4px 9px 14px;overflow:auto;scrollbar-width:thin;scrollbar-color:#394141 transparent}details{border-bottom:1px solid var(--line)}summary{cursor:pointer;list-style:none;padding:11px 5px;font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:#cbd3d3}summary::-webkit-details-marker{display:none}summary:after{content:"+";float:right;color:#7e8989}details[open] summary:after{content:"−"}.group{padding:0 5px 12px}.control{display:grid;grid-template-columns:106px 1fr 42px;align-items:center;gap:7px;min-height:28px;color:#aab5b5}.control output{text-align:right;color:#e4e9e9;font-variant-numeric:tabular-nums;font-size:10px}.control select{grid-column:2/4;width:100%;padding:5px}.control .wide{grid-column:2/4}.control input[type=range]{width:100%;height:3px;accent-color:#c88a50}.control input[type=checkbox]{justify-self:end;accent-color:#d18c4b;width:15px;height:15px}.control label{white-space:nowrap}.button-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.button-row button{font-size:10px}.hint{color:#6f7c7d;font-size:9px;margin:6px 0 0}.mode-only{display:none}.mode-eht .eht-only,.mode-gravity .gravity-only,.mode-cinematic .cine-only{display:grid}
+#presets{left:18px;bottom:18px;display:flex;flex-wrap:wrap;gap:5px;width:min(650px,calc(100vw - 360px));padding:7px;border-radius:9px}#presets button{font-size:9px;padding:6px 8px;color:#aeb9b9}.key{color:#7d8989;margin-left:2px}
+#seeing{left:18px;top:255px;width:280px;border-radius:10px;overflow:hidden}#seeing summary{padding:10px 13px}#seeing .copy{padding:0 13px 13px;color:#aab5b5;font-size:11px}#seeing .copy b{color:#ecf1f1}.copy p{margin:0 0 8px}
+#gravityData{left:50%;bottom:22px;transform:translateX(-50%);padding:8px 14px;border-radius:8px;display:none;gap:18px;font-variant-numeric:tabular-nums;color:#aab5b5}.mode-gravity #gravityData{display:flex}.gravity-item b{display:block;color:#fff;font-size:13px;font-weight:500}.gravity-item span{font-size:9px;text-transform:uppercase;letter-spacing:.1em}
+#scaleBar{position:fixed;z-index:8;left:50%;bottom:22px;transform:translateX(-50%);display:none;color:#ddd;font-size:9px;text-align:center;text-shadow:0 1px 3px #000}.mode-eht #scaleBar{display:block}.bar{height:5px;width:86px;border:1px solid #ddd;border-top:0;margin:0 auto 4px}
+#help{position:fixed;z-index:9;right:330px;top:18px;color:#7e8989;font-size:9px;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 1px 3px #000}
+@media(max-width:760px){#info{left:8px;top:8px;width:216px;padding:12px}.title{font-size:17px}#controls{right:7px;top:7px;bottom:7px;width:min(305px,calc(100vw - 14px));transform:translateX(calc(100% + 12px));transition:transform .25s}#controls.open{transform:none}#controlsToggleMobile{display:block!important;position:fixed;z-index:12;right:9px;top:9px}.controls-head #closeControls{display:block!important}#presets{left:8px;bottom:8px;width:calc(100vw - 16px);padding-right:58px;overflow:hidden;flex-wrap:nowrap}#presets button{white-space:nowrap}#seeing{display:none}#help{display:none}#gravityData{bottom:58px}.mode-eht #scaleBar{bottom:62px}}
+@media(min-width:761px){#controlsToggleMobile,#closeControls{display:none!important}}
+</style>
+</head>
+<body class="mode-cinematic">
+<div id="loading"><div class="loader"><div class="loader-ring"></div>Sagittarius A*<small>initializing relativistic renderer</small></div></div>
+<div id="error"></div>
+<button id="controlsToggleMobile" class="ui" aria-label="Open controls">☰</button>
+<section id="info" class="ui panel" aria-label="Sagittarius A star information">
+  <div class="eyebrow">Real-time model</div><div class="title">SAGITTARIUS A*</div><div class="subtitle">Galactic Centre Black Hole</div>
+  <div class="readout"><span>Mass</span><b>4.3 million M☉</b><span>Distance</span><b>27,000 ly</b><span>Spin a*</span><b id="rSpin">+0.50 model</b><span>Inclination</span><b id="rIncl">27°</b><span>Time rate</span><b id="rTime">600×</b><span>Observing</span><b id="rMode">Cinematic</b><span>Performance</span><b id="rFps">— fps</b></div>
+  <div class="mode-tabs"><button data-mode="0" class="active">1 CINEMA</button><button data-mode="1">2 EHT</button><button data-mode="2">3 GRAVITY</button></div>
+</section>
+<details id="seeing" class="ui panel">
+  <summary>What am I seeing?</summary><div class="copy">
+  <p><b>Event horizon:</b> the no-return boundary. The larger dark <b>shadow</b> is its lensed silhouette. The bright <b>emission ring</b> is hot plasma; its finest nested edge is the <b>photon ring</b>, made by near-critical ray paths.</p>
+  <p>The approaching plasma is brighter through relativistic Doppler beaming. Curved light paths lift the rear of the thick flow into secondary images above and below the shadow.</p>
+  <p>Sgr A* is compact enough to evolve over minutes: the flare model defaults to a ~70-minute orbit near the ISCO. This is a physically motivated, Kerr-inspired radiative model, not a research-grade GRMHD calculation.</p></div>
+</details>
+<aside id="controls" class="ui panel" aria-label="Observatory controls">
+  <div class="controls-head"><span>Observatory controls</span><button id="closeControls">×</button><button id="collapseControls">Hide</button></div>
+  <div class="controls-scroll">
+    <details open><summary>Spacetime</summary><div class="group">
+      <div class="control"><label for="spin">Spin a* (model)</label><input id="spin" type="range" min="-.99" max=".99" step=".01" value=".5"><output></output></div>
+      <div class="control"><label for="inclination">Inclination</label><input id="inclination" type="range" min="0" max="89" step="1" value="27"><output></output></div>
+      <div class="control"><label for="positionAngle">Position angle</label><input id="positionAngle" type="range" min="-180" max="180" step="1" value="-12"><output></output></div>
+      <div class="control"><label for="flowDirection">Orbital direction</label><select id="flowDirection"><option value="1">Prograde</option><option value="-1">Retrograde</option></select></div>
+      <div class="control"><label for="quality">Lensing quality</label><select id="quality"><option value="low">Low · 48 steps</option><option value="medium" selected>Medium · 72</option><option value="high">High · 96</option><option value="ultra">Ultra · 128</option></select></div>
+      <div class="control"><label for="ringOrder">Photon-ring order</label><input id="ringOrder" type="range" min="0" max="3" step="1" value="2"><output></output></div>
+      <div class="control"><label for="frameDrag">Frame dragging</label><input id="frameDrag" type="range" min="0" max="1.5" step=".01" value="1"><output></output></div>
+      <div class="control"><label for="shadowScale">Shadow scale</label><input id="shadowScale" type="range" min=".7" max="1.3" step=".01" value="1"><output></output></div>
+    </div></details>
+    <details open><summary>Plasma</summary><div class="group">
+      <div class="control"><label for="flowBrightness">Flow brightness</label><input id="flowBrightness" type="range" min="0" max="3" step=".01" value="1.25"><output></output></div>
+      <div class="control"><label for="density">Density</label><input id="density" type="range" min=".1" max="3" step=".01" value="1.05"><output></output></div>
+      <div class="control"><label for="temperature">Electron temp.</label><input id="temperature" type="range" min=".2" max="3" step=".01" value="1.15"><output></output></div>
+      <div class="control"><label for="thickness">Torus thickness</label><input id="thickness" type="range" min=".15" max="1.2" step=".01" value=".62"><output></output></div>
+      <div class="control"><label for="innerRadius">Inner radius (r_g)</label><input id="innerRadius" type="range" min="1.3" max="8" step=".1" value="2.2"><output></output></div>
+      <div class="control"><label for="outerRadius">Outer radius (r_g)</label><input id="outerRadius" type="range" min="8" max="28" step=".1" value="17"><output></output></div>
+      <div class="control"><label for="rotationSpeed">Rotation speed</label><input id="rotationSpeed" type="range" min=".1" max="1.8" step=".01" value="1"><output></output></div>
+      <div class="control"><label for="turbulence">Turbulence</label><input id="turbulence" type="range" min="0" max="2" step=".01" value=".72"><output></output></div>
+      <div class="control"><label for="magCoherence">Mag. coherence</label><input id="magCoherence" type="range" min="0" max="1" step=".01" value=".62"><output></output></div>
+      <div class="control"><label for="flowState">Magnetic state</label><select id="flowState"><option value="0" selected>SANE-like · turbulent</option><option value="1">MAD-like · organized arcs</option></select></div>
+      <div class="control"><label for="densitySlope">Density slope</label><input id="densitySlope" type="range" min=".2" max="3" step=".01" value="1.1"><output></output></div>
+      <div class="control"><label for="emissivityFalloff">Emissivity falloff</label><input id="emissivityFalloff" type="range" min=".3" max="3" step=".01" value="1.25"><output></output></div>
+      <div class="control"><label for="doppler">Doppler boost</label><input id="doppler" type="range" min="0" max="1.5" step=".01" value="1"><output></output></div>
+      <div class="control"><label for="redshift">Grav. redshift</label><input id="redshift" type="range" min="0" max="1.5" step=".01" value="1"><output></output></div>
+    </div></details>
+    <details><summary>Hotspot</summary><div class="group">
+      <div class="control"><label for="hotspot">Enable hotspot</label><input id="hotspot" type="checkbox" checked><span></span></div>
+      <div class="button-row"><button id="triggerFlare">Trigger flare · F</button><button id="hotDirection">Prograde orbit</button></div>
+      <div class="control"><label for="hotRadius">Orbital radius</label><input id="hotRadius" type="range" min="3.2" max="10" step=".1" value="5.8"><output></output></div>
+      <div class="control"><label for="hotPeriod">Period (minutes)</label><input id="hotPeriod" type="range" min="20" max="140" step="1" value="70"><output></output></div>
+      <div class="control"><label for="hotBrightness">Brightness</label><input id="hotBrightness" type="range" min="0" max="5" step=".01" value="2.1"><output></output></div>
+      <div class="control"><label for="hotLifetime">Lifetime (orbits)</label><input id="hotLifetime" type="range" min=".2" max="8" step=".1" value="3.5"><output></output></div>
+      <div class="control"><label for="hotShear">Shearing</label><input id="hotShear" type="range" min="0" max="2" step=".01" value=".7"><output></output></div>
+      <div class="control"><label for="hotCooling">Cooling</label><input id="hotCooling" type="range" min="0" max="2" step=".01" value=".55"><output></output></div>
+      <div class="control"><label for="trailLength">Trail length</label><input id="trailLength" type="range" min="0" max="1" step=".01" value=".48"><output></output></div>
+    </div></details>
+    <details><summary>Magnetic field & polarization</summary><div class="group">
+      <div class="control"><label for="polarization">Overlay</label><input id="polarization" type="checkbox"><span></span></div>
+      <div class="control"><label for="toroidal">Toroidal field</label><input id="toroidal" type="range" min="0" max="1" step=".01" value=".75"><output></output></div>
+      <div class="control"><label for="poloidal">Poloidal field</label><input id="poloidal" type="range" min="0" max="1" step=".01" value=".35"><output></output></div>
+      <div class="control"><label for="fieldCoherence">Field coherence</label><input id="fieldCoherence" type="range" min="0" max="1" step=".01" value=".72"><output></output></div>
+      <div class="control"><label for="faraday">Faraday rotation</label><input id="faraday" type="range" min="0" max="3.14" step=".01" value=".35"><output></output></div>
+      <div class="control"><label for="polFraction">Polarization fraction</label><input id="polFraction" type="range" min="0" max="1" step=".01" value=".45"><output></output></div>
+      <div class="control"><label for="polDensity">Overlay density</label><input id="polDensity" type="range" min="6" max="36" step="1" value="18"><output></output></div>
+    </div></details>
+    <details open><summary>Observation</summary><div class="group">
+      <div class="control"><label for="obsMode">Observing mode</label><select id="obsMode"><option value="0">Cinematic</option><option value="1">EHT · 230 GHz</option><option value="2">GRAVITY · near-IR</option></select></div>
+      <div class="control"><label for="exposureTime">Exposure time</label><input id="exposureTime" type="range" min="0" max="1" step=".01" value=".18"><output></output></div>
+      <div class="control"><label for="timeScale">Time acceleration</label><input id="timeScale" type="range" min="1" max="3600" step="1" value="600"><output></output></div>
+      <div class="control eht-only mode-only"><label for="timeAverage">Time averaging</label><input id="timeAverage" type="range" min="0" max=".995" step=".005" value=".92"><output></output></div>
+      <div class="control eht-only mode-only"><label for="scattering">Scattering blur</label><input id="scattering" type="range" min="0" max="2" step=".01" value=".55"><output></output></div>
+      <div class="control eht-only mode-only"><label for="resolution">Angular resolution</label><input id="resolution" type="range" min="0" max="2" step=".01" value=".65"><output></output></div>
+      <div class="control eht-only mode-only"><label for="artifacts">Sparse artifacts</label><input id="artifacts" type="checkbox"><span></span></div>
+      <div class="control eht-only mode-only"><label for="ehtCompare">Raw / average split</label><input id="ehtCompare" type="checkbox" checked><span></span></div>
+      <div class="control eht-only mode-only"><label for="polarizedIntensity">Polarized intensity</label><input id="polarizedIntensity" type="checkbox"><span></span></div>
+      <div class="control gravity-only mode-only"><label for="astroTrail">Astrometric trail</label><input id="astroTrail" type="checkbox" checked><span></span></div>
+      <div class="control"><label for="palette">False-colour palette</label><select id="palette"><option value="0">Physical warm</option><option value="1">EHT amber</option><option value="2">Inferno</option><option value="3">Monochrome</option></select></div>
+    </div></details>
+    <details><summary>Display</summary><div class="group">
+      <div class="control"><label for="bloom">Bloom</label><input id="bloom" type="range" min="0" max="2" step=".01" value=".62"><output></output></div>
+      <div class="control"><label for="toneMapping">Tone mapping</label><select id="toneMapping"><option value="0">ACES filmic</option><option value="1">Reinhard</option><option value="2">Neutral</option></select></div>
+      <div class="control"><label for="exposure">Exposure</label><input id="exposure" type="range" min=".2" max="3" step=".01" value="1.15"><output></output></div>
+      <div class="control"><label for="background">Background stars</label><input id="background" type="range" min="0" max="2" step=".01" value=".72"><output></output></div>
+      <div class="control"><label for="dust">Dust lanes</label><input id="dust" type="range" min="0" max="2" step=".01" value=".75"><output></output></div>
+      <div class="control"><label for="alignment">Background alignment</label><input id="alignment" type="range" min="-1" max="1" step=".005" value=".42"><output></output></div>
+      <div class="control"><label for="grain">Film grain</label><input id="grain" type="range" min="0" max=".08" step=".001" value=".012"><output></output></div>
+      <div class="control"><label for="glare">Camera glare</label><input id="glare" type="checkbox" checked><span></span></div>
+      <div class="control"><label for="aberration">Camera aberration</label><input id="aberration" type="checkbox"><span></span></div>
+      <div class="control"><label for="adaptive">Adaptive quality</label><input id="adaptive" type="checkbox" checked><span></span></div>
+      <div class="control"><label for="renderScale">Render resolution</label><input id="renderScale" type="range" min=".4" max="1" step=".05" value=".8"><output></output></div>
+    </div></details>
+  </div>
+</aside>
+<nav id="presets" class="ui panel" aria-label="Camera presets">
+  <button data-preset="earth">Earth view</button><button data-preset="face">Face-on</button><button data-preset="45">45°</button><button data-preset="edge">Edge-on</button><button data-preset="polar">Polar</button><button data-preset="close">Photon ring</button><button data-preset="wide">Wide centre</button><span class="key">Drag · zoom · ⇧ pan · H UI</span>
+</nav>
+<div id="scaleBar"><div class="bar"></div>20 μas <span id="compareLabel">· RAW | AVERAGED</span></div>
+<div id="gravityData" class="ui panel"><div class="gravity-item"><b id="gPhase">0°</b><span>orbital phase</span></div><div class="gravity-item"><b id="gOffset">0 μas</b><span>projected offset</span></div><div class="gravity-item"><b id="gPeriod">70 min</b><span>model period</span></div></div>
+<div id="help">Space pause · R reset · F flare · 1–3 modes</div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
+
+const $=id=>document.getElementById(id), body=document.body, loading=$('loading'), errorBox=$('error');
+window.addEventListener('error',e=>showError('The observatory could not start. '+e.message));
+function showError(message){loading.classList.add('done');errorBox.style.display='grid';errorBox.innerHTML='<div><strong>Renderer unavailable</strong><br><br>'+message+'<br><br>Try a current version of Chrome, Safari, or Firefox with hardware acceleration enabled.</div>'}
+const canvas=document.createElement('canvas');canvas.setAttribute('aria-label','Interactive ray-traced view of Sagittarius A star');document.body.prepend(canvas);
+const gl=canvas.getContext('webgl2',{alpha:false,antialias:false,powerPreference:'high-performance',preserveDrawingBuffer:false});
+if(!gl){showError('This experience requires WebGL2.');throw new Error('WebGL2 unavailable')}
+
+const vert=`
+in vec3 position; out vec2 vUv;
+void main(){vUv=position.xy*.5+.5;gl_Position=vec4(position,1.);}`;
+const frag=`
+precision highp float; precision highp int;
+in vec2 vUv; out vec4 outColor;
+uniform vec2 uResolution; uniform float uTime,uFrame,uSpin,uInclination,uPositionAngle,uFrameDrag,uShadowScale;
+uniform vec3 uCamPos,uCamRight,uCamUp,uCamForward,uPan; uniform float uFov;
+uniform int uSteps,uRingOrder,uMode,uFlowState,uFlowDir; uniform float uBrightness,uDensity,uTemperature,uThickness,uInner,uOuter,uRotation,uTurbulence,uMagCoherence,uDensitySlope,uFalloff,uDoppler,uRedshift;
+uniform int uHotspot,uHotDir; uniform float uHotRadius,uHotPeriod,uHotBrightness,uHotAge,uHotLifetime,uHotShear,uHotCooling,uTrail,uHotPhase;
+uniform float uBackground,uDust,uAlignment;
+
+#define PI 3.14159265359
+float hash11(float p){p=fract(p*.1031);p*=p+33.33;p*=p+p;return fract(p);}
+float hash31(vec3 p){p=fract(p*.1031);p+=dot(p,p.yzx+33.33);return fract((p.x+p.y)*p.z);}
+float noise3(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(hash31(i),hash31(i+vec3(1,0,0)),f.x),mix(hash31(i+vec3(0,1,0)),hash31(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash31(i+vec3(0,0,1)),hash31(i+vec3(1,0,1)),f.x),mix(hash31(i+vec3(0,1,1)),hash31(i+vec3(1)),f.x),f.y),f.z);}
+float fbm(vec3 p){float a=.52,s=0.;mat3 m=mat3(.00,.80,.60,-.80,.36,-.48,-.60,-.48,.64);for(int i=0;i<4;i++){s+=a*noise3(p);p=m*p*2.03+1.7;a*=.5;}return s;}
+mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+vec3 palette(float x){
+  x=max(0.,x);
+  if(uMode==1)return mix(vec3(.16,.012,.002),vec3(1.,.23,.006),smoothstep(.01,.45,x))+vec3(1.,.72,.19)*smoothstep(.45,1.7,x);
+  if(uMode==2)return mix(vec3(.055,.008,.003),vec3(1.,.32,.045),smoothstep(.05,.75,x))+vec3(1.,.82,.52)*smoothstep(.8,2.3,x);
+  return mix(vec3(.11,.012,.002),vec3(1.,.20,.025),smoothstep(.015,.5,x))+mix(vec3(1.,.38,.08),vec3(.88,1.,1.08),smoothstep(.5,2.2,x))*smoothstep(.35,2.2,x);
+}
+float starLayer(vec3 d,float scale,float threshold){vec2 q=vec2(atan(d.z,d.x)/6.2831853+.5,asin(clamp(d.y,-1.,1.))/3.14159265+.5);vec2 g=floor(q*scale),f=fract(q*scale)-.5;float h=hash31(vec3(g,scale));vec2 o=vec2(hash11(h*83.1),hash11(h*151.7))-.5;float ds=length(f-o*.72);float core=exp(-ds*ds*900.);return core*pow(smoothstep(threshold,1.,h),18.);}
+vec3 background(vec3 d){
+  float band=exp(-pow((d.y+.10*sin(atan(d.z,d.x)*2.7))/0.23,2.));
+  float cloud=fbm(d*4.+vec3(0,0,uTime*.002));float dust=fbm(d*12.+8.);float lane=mix(1.,smoothstep(.18,.8,dust),uDust*.72*band);
+  float stars=starLayer(d,220.,.52)+.55*starLayer(d,410.,.61)+2.2*starLayer(d,95.,.76);
+  vec3 col=(vec3(.012,.009,.007)+band*vec3(.055,.035,.021)*(0.35+cloud))*lane;
+  col+=stars*uBackground*mix(vec3(.65,.76,1.),vec3(1.,.65,.32),hash11(floor(atan(d.z,d.x)*500.)));
+  // A movable bright background star is sampled after lensing, so caustic crossings form multiple arc-like images.
+  vec3 sd=normalize(vec3(uAlignment*.13,.025,-1.));float sa=acos(clamp(dot(d,sd),-1.,1.));col+=vec3(1.,.78,.48)*3.5*exp(-sa*sa/0.000004)*uBackground;
+  return col;
+}
+float torusDensity(vec3 p,float localT,out float filament){
+  float R=length(p.xy),z=abs(p.z),ph=atan(p.y,p.x);float h=max(.35,uThickness*(.34*R+1.));
+  float radial=smoothstep(uInner-.7,uInner+.5,R)*exp(-uDensitySlope*max(0.,R-uInner)/7.)*(1.-smoothstep(uOuter-1.,uOuter+5.,R));
+  radial+=.13*exp(-pow((R-uInner*.82)/1.8,2.));float vertical=exp(-pow(z/h,1.65));
+  float om=uRotation/(pow(max(R,2.2),1.5)+uSpin*float(uFlowDir));float adv=ph-float(uFlowDir)*localT*om*2.4;
+  vec3 q=vec3(R*.42,z*.55,adv*1.3);vec3 warp=vec3(fbm(q+1.7),fbm(q+8.1),fbm(q+15.9));
+  float n=fbm(q*1.7+(warp-.5)*2.7*uTurbulence);
+  float spiral=.5+.5*sin(adv*(uFlowState==1?3.:6.)+R*(uFlowState==1?1.35:2.15)+3.2*n);
+  float arcs=smoothstep(.4,.95,spiral)*mix(.55,1.45,uMagCoherence)*(uFlowState==1?1.25:.55);
+  filament=mix(n,arcs,.35+float(uFlowState)*.35);
+  return radial*vertical*mix(.35,1.75,clamp(n*.68+arcs*.32,0.,1.))*uDensity;
+}
+vec4 hotspotEmission(vec3 p,float pathTime){
+  if(uHotspot==0)return vec4(0);
+  float age=max(0.,uHotAge-pathTime*.012);float life=uHotLifetime;float fade=exp(-uHotCooling*age/max(.15,life))*(1.-smoothstep(life*.72,life,age));
+  float omega=6.2831853/max(.1,uHotPeriod);float phase=uHotPhase+float(uHotDir)*omega*(uTime-pathTime*.11);
+  float best=0.;float trailV=0.;
+  for(int j=0;j<9;j++){float jf=float(j)/8.;float lag=jf*uTrail*1.65;float ph=phase-float(uHotDir)*lag;float rr=uHotRadius+uHotShear*lag*.24;vec3 hp=vec3(cos(ph)*rr,sin(ph)*rr,.15*sin(ph*2.+uHotPhase));vec3 dp=p-hp;dp.xy=rot(-ph)*dp.xy;float shear=1.+uHotShear*lag*2.;float g=exp(-(dp.x*dp.x/(.34*shear)+dot(dp.yz,dp.yz)/.24)*2.4);if(j==0)best=g;else trailV+=g*exp(-jf*4.)*.38;}
+  float R=max(2.1,length(p.xy));vec3 vel=float(uHotDir)*normalize(vec3(-p.y,p.x,0.))*.30;float beta=length(vel);float dop=1./(sqrt(1.-beta*beta)*(1.-dot(vel,normalize(uCamPos-p))));
+  return vec4(vec3(1.8,.42,.055)*(best+trailV)*uHotBrightness*fade*pow(dop,2.8),best+trailV);
+}
+void main(){
+  vec2 uv=(gl_FragCoord.xy-.5*uResolution)/uResolution.y;uv=rot(uPositionAngle)*uv;uv+=uPan.xy;
+  float jitter=fract(hash11(dot(gl_FragCoord.xy,vec2(1.,113.))+uFrame*17.))-.5;
+  vec3 ro=uCamPos,rd=normalize(uCamForward+uCamRight*uv.x*uFov+uCamUp*uv.y*uFov);
+  vec3 p=ro,v=rd;float travel=0.,alpha=0.,minR=1e4,turning=0.,lastDr=-1.;vec3 radiance=vec3(0);bool captured=false,escaped=false;
+  float horizon=(1.+sqrt(max(.002,1.-uSpin*uSpin)))*uShadowScale;
+  // Backward null-ray integration. This hybrid uses Schwarzschild bending plus a Kerr Lense-Thirring term; adaptive affine steps let near-critical rays orbit and accumulate higher-order emission.
+  for(int i=0;i<128;i++){
+    if(i>=uSteps)break;float r=length(p);minR=min(minR,r);if(r<horizon){captured=true;break;}if(r>34.&&dot(p,v)>0.&&i>4){escaped=true;break;}
+    float stepLen=mix(.09,.52,smoothstep(2.1,18.,r));stepLen*=1.+.04*jitter;
+    vec3 radial=p/max(r,1e-3);float dr=dot(v,radial);if(lastDr*dr<0.)turning+=1.;lastDr=dr;
+    float bend=2.05/(r*r+1.4);vec3 acc=-radial*bend;
+    vec3 spinAxis=vec3(0,0,1);vec3 drag=cross(spinAxis,p)/(r*r*r+1.)*uSpin*uFrameDrag*1.8;acc+=drag+cross(drag,v)*.72;
+    v=normalize(v+acc*stepLen);p+=v*stepLen;travel+=stepLen;r=length(p);
+    if(r<uOuter+6.){
+      float fil;float den=torusDensity(p,uTime-travel*.12,fil);if(den>.0005){
+        float R=max(1.5,length(p.xy));vec3 vel=float(uFlowDir)*normalize(vec3(-p.y,p.x,0.))*min(.61,.72/sqrt(R));float beta=length(vel);float gamma=inversesqrt(max(.15,1.-beta*beta));
+        float dop=1./(gamma*max(.28,1.-dot(vel,normalize(uCamPos-p))));
+        float grav=sqrt(max(.025,1.-2./max(r,2.02)+.28*uSpin*uSpin/(r*r)));
+        // Invariant synchrotron transfer is approximated by g^3 emissivity: gravitational redshift and SR Doppler/beaming jointly set brightness and colour temperature.
+        float g=pow(dop,mix(0.,2.35,uDoppler))*pow(grav,mix(0.,3.,uRedshift));
+        float temp=uTemperature*pow(max(R/uInner,1.),-.72);float em=den*pow(temp,1.25)*exp(-uFalloff*max(0.,R-uInner)/4.)*stepLen*.55;
+        float nearCritical=(1.-smoothstep(2.25,4.2,r))*(1.-smoothstep(.02,.7,abs(dr)));float order=min(float(uRingOrder),turning+nearCritical*2.);
+        em*=1.+nearCritical*order*.72;vec3 c=palette(em*g*uBrightness*(.62+fil*.7)*8.);radiance+=(1.-alpha)*c*em*g*uBrightness*5.;
+        vec4 hs=hotspotEmission(p,travel);radiance+=(1.-alpha)*hs.rgb*stepLen*.24;alpha+=den*stepLen*.018+hs.a*stepLen*.035;if(alpha>.97)break;
+      }
+    }
+  }
+  if(!captured){radiance+=(1.-alpha)*background(normalize(v))*mix(.3,1.,smoothstep(2.,4.,minR));}
+  // Capture stays genuinely black except for foreground optically thin plasma integrated before horizon crossing.
+  float shadowR=1.-smoothstep(horizon,horizon+.35,minR);radiance*=1.-shadowR*.34;
+  if(uMode==2)radiance*=vec3(.82,.58,.45)*(uHotspot==1?1.25:.75);
+  outColor=vec4(max(radiance,0.),1.);
+}`;
+
+const postFrag=`
+precision highp float; in vec2 vUv; out vec4 outColor;
+uniform sampler2D uCurrent,uHistory;uniform vec2 uResolution;uniform float uBloom,uExposure,uExposureTime,uGrain,uTime,uScattering,uInstrument,uAverage,uFaraday,uPolFraction,uPolDensity,uToroidal,uPoloidal,uFieldCoherence,uInclination,uHotRadius,uHotPhase,uHotPeriod;
+uniform int uMode,uTone,uPalette,uAberration,uGlare,uArtifacts,uCompare,uPolarization,uPolarizedIntensity,uAstroTrail;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+vec3 sampleBlur(sampler2D t,vec2 uv,float rad){vec2 px=1./uResolution*rad;vec3 c=texture(t,uv).rgb*4.;c+=texture(t,uv+vec2(px.x,0)).rgb;c+=texture(t,uv-vec2(px.x,0)).rgb;c+=texture(t,uv+vec2(0,px.y)).rgb;c+=texture(t,uv-vec2(0,px.y)).rgb;c+=texture(t,uv+px).rgb;c+=texture(t,uv-px).rgb;return c/10.;}
+vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}
+float seg(vec2 p,vec2 a,vec2 b){vec2 pa=p-a,ba=b-a;float h=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);return length(pa-ba*h);}
+void main(){
+ vec2 uv=vUv;float ca=float(uAberration)*.0014*length(uv-.5);vec3 raw;if(uAberration==1&&uMode==0){raw=vec3(texture(uCurrent,uv+(uv-.5)*ca).r,texture(uCurrent,uv).g,texture(uCurrent,uv-(uv-.5)*ca).b);}else raw=texture(uCurrent,uv).rgb;
+ float blur=(uMode==1)?(uScattering*1.6+uInstrument*1.2):.45;vec3 soft=sampleBlur(uCurrent,uv,blur);vec3 hist=texture(uHistory,uv).rgb;vec3 col=raw;
+ if(uMode==1){col=mix(raw,soft,clamp((uScattering+uInstrument)*.28,0.,.78));col=mix(col,hist,uAverage);if(uCompare==1){col=uv.x<.5?raw:hist;if(abs(uv.x-.5)<.0012)col=vec3(.8);}}
+ col+=max(soft-vec3(.16),0.)*uBloom*(uMode==1?.25:1.);
+ if(uArtifacts==1&&uMode==1){float ripple=sin(length(uv-.5)*uResolution.y*.18+sin(atan(uv.y-.5,uv.x-.5)*7.))*0.03;col*=1.+ripple;col+=vec3(.06,.018,0.)*step(.985,hash(floor(uv*uResolution/7.)));}
+ vec2 p=(uv-.5)*vec2(uResolution.x/uResolution.y,1.);float rad=length(p);float ang=atan(p.y,p.x);
+ if(uPolarization==1&&rad>.075&&rad<.27){float n=max(6.,uPolDensity),cell=floor((ang+3.14159)/6.28318*n);float a=(cell+.5)/n*6.28318-3.14159;float rr=.15+.025*sin(cell*2.17+uTime*.08);vec2 c=vec2(cos(a),sin(a))*rr;float projected=atan(cos(a)*cos(uInclination),-sin(a));float field=mix(projected,a+1.5708,uToroidal/(uToroidal+uPoloidal+.001))+uFaraday+sin(cell*1.7+uTime*.03)*(1.-uFieldCoherence);vec2 d=vec2(cos(field),sin(field))*.018;float tick=1.-smoothstep(.0011,.0035,seg(p,c-d,c+d));col+=vec3(.72,.92,1.)*tick*uPolFraction*(.5+.5*length(raw));}
+ if(uMode==2&&uAstroTrail==1){float inc=uInclination;for(int i=0;i<40;i++){float t=float(i)/39.*6.28318;vec2 q=vec2(cos(t),sin(t)*cos(inc))*(.075+.007*uHotRadius);float trail=1.-smoothstep(.0012,.0032,length(p-q));col+=vec3(1.,.42,.12)*trail*.19;}float ph=uHotPhase+uTime*6.28318/max(.1,uHotPeriod),oldPh=ph-uExposureTime*.45;vec2 q=vec2(cos(ph),sin(ph)*cos(inc))*(.075+.007*uHotRadius),qOld=vec2(cos(oldPh),sin(oldPh)*cos(inc))*(.075+.007*uHotRadius);float streak=1.-smoothstep(.0015,.007,seg(p,qOld,q));col+=vec3(1.,.75,.35)*(exp(-dot(p-q,p-q)*9000.)*.9+streak*uExposureTime*.4);}
+ if(uPolarizedIntensity==1&&uMode==1)col*=.38+.9*abs(sin(ang*2.+uFaraday));
+ if(uGlare==1&&uMode==0){float g=pow(max(0.,1.-abs(p.y)*90.),18.)*pow(max(0.,1.-abs(p.x)*1.7),8.);col+=vec3(1.,.55,.22)*g*max(0.,length(raw)-.8)*.05;}
+ float lum=dot(col,vec3(.2126,.7152,.0722));if(uPalette==1)col=vec3(lum*1.55,lum*.48,lum*.035);else if(uPalette==2)col=mix(vec3(.025,.002,.09),vec3(1.,.055,.005),smoothstep(.02,.65,lum))+vec3(1.,.72,.16)*smoothstep(.62,1.5,lum);else if(uPalette==3)col=vec3(lum);
+ col*=uExposure;if(uTone==0)col=aces(col);else if(uTone==1)col=col/(1.+col);else col=clamp(col,0.,1.);
+ col+=(hash(gl_FragCoord.xy+uTime*83.)-.5)*uGrain*(uMode==0?1.:.3);col*=1.-.32*pow(length((uv-.5)*1.35),2.);
+ outColor=vec4(max(col,0.),1.);
+}`;
+
+const accumFrag=`precision highp float;in vec2 vUv;out vec4 outColor;uniform sampler2D uCurrent,uPrevious;uniform float uBlend;void main(){vec3 c=texture(uCurrent,vUv).rgb,p=texture(uPrevious,vUv).rgb;outColor=vec4(mix(c,p,uBlend),1.);}`;
+
+const renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.autoClear=false;
+const scene=new THREE.Scene(), camera=new THREE.Camera(), geometry=new THREE.PlaneGeometry(2,2);
+const U={};function uf(v){return{value:v}};function ui(v){return{value:v}};
+Object.assign(U,{uResolution:uf(new THREE.Vector2()),uTime:uf(0),uFrame:uf(0),uSpin:uf(.5),uInclination:uf(THREE.MathUtils.degToRad(27)),uPositionAngle:uf(-.21),uFrameDrag:uf(1),uShadowScale:uf(1),uCamPos:uf(new THREE.Vector3()),uCamRight:uf(new THREE.Vector3()),uCamUp:uf(new THREE.Vector3()),uCamForward:uf(new THREE.Vector3()),uPan:uf(new THREE.Vector3()),uFov:uf(1.15),uSteps:ui(72),uRingOrder:ui(2),uMode:ui(0),uFlowState:ui(0),uFlowDir:ui(1),uBrightness:uf(1.25),uDensity:uf(1.05),uTemperature:uf(1.15),uThickness:uf(.62),uInner:uf(2.2),uOuter:uf(17),uRotation:uf(1),uTurbulence:uf(.72),uMagCoherence:uf(.62),uDensitySlope:uf(1.1),uFalloff:uf(1.25),uDoppler:uf(1),uRedshift:uf(1),uHotspot:ui(1),uHotDir:ui(1),uHotRadius:uf(5.8),uHotPeriod:uf(7),uHotBrightness:uf(2.1),uHotAge:uf(0),uHotLifetime:uf(3.5),uHotShear:uf(.7),uHotCooling:uf(.55),uTrail:uf(.48),uHotPhase:uf(1.1),uBackground:uf(.72),uDust:uf(.75),uAlignment:uf(.42)});
+const rayMaterial=new THREE.RawShaderMaterial({glslVersion:THREE.GLSL3,vertexShader:vert,fragmentShader:frag,uniforms:U,depthTest:false,depthWrite:false}),rayMesh=new THREE.Mesh(geometry,rayMaterial);rayMesh.frustumCulled=false;scene.add(rayMesh);
+const postScene=new THREE.Scene(),postCamera=new THREE.Camera();
+const PU={uCurrent:uf(null),uHistory:uf(null),uResolution:uf(new THREE.Vector2()),uBloom:uf(.62),uExposure:uf(1.15),uExposureTime:uf(.18),uGrain:uf(.012),uTime:uf(0),uScattering:uf(.55),uInstrument:uf(.65),uAverage:uf(.92),uFaraday:uf(.35),uPolFraction:uf(.45),uPolDensity:uf(18),uToroidal:uf(.75),uPoloidal:uf(.35),uFieldCoherence:uf(.72),uInclination:uf(U.uInclination.value),uHotRadius:uf(5.8),uHotPhase:uf(1.1),uHotPeriod:uf(7),uMode:ui(0),uTone:ui(0),uPalette:ui(0),uAberration:ui(0),uGlare:ui(1),uArtifacts:ui(0),uCompare:ui(1),uPolarization:ui(0),uPolarizedIntensity:ui(0),uAstroTrail:ui(1)};
+const postMaterial=new THREE.RawShaderMaterial({glslVersion:THREE.GLSL3,vertexShader:vert,fragmentShader:postFrag,uniforms:PU,depthTest:false,depthWrite:false}),postMesh=new THREE.Mesh(geometry,postMaterial);postMesh.frustumCulled=false;postScene.add(postMesh);
+const accumScene=new THREE.Scene(),AU={uCurrent:uf(null),uPrevious:uf(null),uBlend:uf(.92)};const accumMaterial=new THREE.RawShaderMaterial({glslVersion:THREE.GLSL3,vertexShader:vert,fragmentShader:accumFrag,uniforms:AU,depthTest:false,depthWrite:false}),accumMesh=new THREE.Mesh(geometry,accumMaterial);accumMesh.frustumCulled=false;accumScene.add(accumMesh);
+
+let rtCurrent,rtA,rtB,historyFlip=false,renderW=1,renderH=1;const retiredTargets=[];
+function makeRT(w,h){return new THREE.WebGLRenderTarget(w,h,{type:THREE.HalfFloatType,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,depthBuffer:false,stencilBuffer:false});}
+function rebuildTargets(){renderer.setRenderTarget(null);AU.uCurrent.value=null;AU.uPrevious.value=null;PU.uCurrent.value=null;PU.uHistory.value=null;renderer.resetState();if(rtCurrent)retiredTargets.push({current:rtCurrent,a:rtA,b:rtB,frames:4});rtCurrent=makeRT(renderW,renderH);rtA=makeRT(renderW,renderH);rtB=makeRT(renderW,renderH);historyFlip=false;renderer.setRenderTarget(rtA);renderer.clear();renderer.setRenderTarget(rtB);renderer.clear();renderer.setRenderTarget(null);renderer.resetState();}
+
+const state={yaw:-.12,pitch:THREE.MathUtils.degToRad(27),distance:18,fov:1.15,panX:0,panY:0,targetYaw:-.12,targetPitch:THREE.MathUtils.degToRad(27),targetDistance:18,targetFov:1.15,targetPanX:0,targetPanY:0,time:0,timeScale:600/60,paused:false,mode:0,renderScale:.8,adaptiveScale:1,movingUntil:0,flareStart:0,hotDir:1,fps:60,quality:'medium',baseSteps:72};
+const camPos=new THREE.Vector3(),forward=new THREE.Vector3(),right=new THREE.Vector3(),up=new THREE.Vector3(),worldUp=new THREE.Vector3(0,0,1),tmp=new THREE.Vector3();
+function updateCamera(){state.yaw+=(state.targetYaw-state.yaw)*.085;state.pitch+=(state.targetPitch-state.pitch)*.085;state.distance+=(state.targetDistance-state.distance)*.09;state.fov+=(state.targetFov-state.fov)*.09;state.panX+=(state.targetPanX-state.panX)*.09;state.panY+=(state.targetPanY-state.panY)*.09;let cp=Math.cos(state.pitch);camPos.set(Math.sin(state.yaw)*cp,-Math.cos(state.yaw)*cp,Math.sin(state.pitch)).multiplyScalar(state.distance);forward.copy(camPos).multiplyScalar(-1).normalize();right.crossVectors(forward,worldUp);if(right.lengthSq()<.001)right.set(1,0,0);else right.normalize();up.crossVectors(right,forward).normalize();U.uCamPos.value.copy(camPos);U.uCamForward.value.copy(forward);U.uCamRight.value.copy(right);U.uCamUp.value.copy(up);U.uFov.value=state.fov;U.uPan.value.set(state.panX,state.panY,0);}
+
+let lastW=0,lastH=0;
+const ranges={spin:['uSpin',2,''],inclination:[null,0,'°'],positionAngle:['uPositionAngle',0,'°'],frameDrag:['uFrameDrag',2,''],shadowScale:['uShadowScale',2,'×'],ringOrder:['uRingOrder',0,''],flowBrightness:['uBrightness',2,'×'],density:['uDensity',2,'×'],temperature:['uTemperature',2,'×'],thickness:['uThickness',2,''],innerRadius:['uInner',1,' r_g'],outerRadius:['uOuter',1,' r_g'],rotationSpeed:['uRotation',2,'×'],turbulence:['uTurbulence',2,''],magCoherence:['uMagCoherence',2,''],densitySlope:['uDensitySlope',2,''],emissivityFalloff:['uFalloff',2,''],doppler:['uDoppler',2,''],redshift:['uRedshift',2,''],hotRadius:['uHotRadius',1,' r_g'],hotPeriod:[null,0,' min'],hotBrightness:['uHotBrightness',2,'×'],hotLifetime:['uHotLifetime',1,' orbits'],hotShear:['uHotShear',2,''],hotCooling:['uHotCooling',2,''],trailLength:['uTrail',2,''],toroidal:[null,2,''],poloidal:[null,2,''],fieldCoherence:[null,2,''],faraday:[null,2,' rad'],polFraction:[null,2,''],polDensity:[null,0,''],exposureTime:[null,2,''],timeScale:[null,0,'×'],timeAverage:[null,3,''],scattering:[null,2,''],resolution:[null,2,''],bloom:[null,2,''],exposure:[null,2,'×'],background:['uBackground',2,''],dust:['uDust',2,''],alignment:['uAlignment',2,''],grain:[null,3,''],renderScale:[null,2,'×']};
+for(const id in ranges){const el=$(id),out=el.parentElement.querySelector('output'),cfg=ranges[id];const update=()=>{let v=parseFloat(el.value);out.value=v.toFixed(cfg[1])+cfg[2];if(cfg[0]){if(cfg[0]==='uPositionAngle')U[cfg[0]].value=THREE.MathUtils.degToRad(v);else U[cfg[0]].value=v}applySpecial(id,v);markMoving(250)};el.addEventListener('input',update);update()}
+function applySpecial(id,v){if(id==='inclination'){state.targetPitch=THREE.MathUtils.degToRad(v);U.uInclination.value=state.targetPitch;PU.uInclination.value=state.targetPitch;$('rIncl').textContent=v.toFixed(0)+'°'}else if(id==='spin')$('rSpin').textContent=(v>=0?'+':'')+v.toFixed(2)+' model';else if(id==='hotPeriod'){U.uHotPeriod.value=v/10;PU.uHotPeriod.value=v/10;$('gPeriod').textContent=v.toFixed(0)+' min'}else if(id==='hotRadius')PU.uHotRadius.value=v;else if(id==='timeScale'){state.timeScale=v/60;$('rTime').textContent=v.toFixed(0)+'×'}else if(id==='exposureTime')PU.uExposureTime.value=v;else if(id==='timeAverage'){PU.uAverage.value=v;AU.uBlend.value=v}else if(id==='scattering')PU.uScattering.value=v;else if(id==='resolution')PU.uInstrument.value=v;else if(id==='bloom')PU.uBloom.value=v;else if(id==='exposure')PU.uExposure.value=v;else if(id==='grain')PU.uGrain.value=v;else if(id==='renderScale'){state.renderScale=v;resize()}else if(id==='toroidal')PU.uToroidal.value=v;else if(id==='poloidal')PU.uPoloidal.value=v;else if(id==='fieldCoherence')PU.uFieldCoherence.value=v;else if(id==='faraday')PU.uFaraday.value=v;else if(id==='polFraction')PU.uPolFraction.value=v;else if(id==='polDensity')PU.uPolDensity.value=v}
+function bindSelect(id,fn){$(id).addEventListener('change',()=>{fn($(id).value);markMoving(350)})}
+bindSelect('flowDirection',v=>U.uFlowDir.value=+v);bindSelect('flowState',v=>U.uFlowState.value=+v);bindSelect('quality',setQuality);bindSelect('obsMode',v=>setMode(+v));bindSelect('toneMapping',v=>PU.uTone.value=+v);bindSelect('palette',v=>PU.uPalette.value=+v);
+const checks={hotspot:['uHotspot',U],polarization:['uPolarization',PU],artifacts:['uArtifacts',PU],ehtCompare:['uCompare',PU],polarizedIntensity:['uPolarizedIntensity',PU],astroTrail:['uAstroTrail',PU],glare:['uGlare',PU],aberration:['uAberration',PU]};
+for(const id in checks){const el=$(id),[key,obj]=checks[id];const update=()=>obj[key].value=el.checked?1:0;el.addEventListener('change',update);update()}
+
+function setQuality(v){state.quality=v;const map={low:48,medium:72,high:96,ultra:128};state.baseSteps=map[v];U.uSteps.value=state.baseSteps;markMoving(500)}
+function setMode(mode){state.mode=mode;U.uMode.value=mode;PU.uMode.value=mode;$('obsMode').value=mode;body.classList.remove('mode-cinematic','mode-eht','mode-gravity');body.classList.add(['mode-cinematic','mode-eht','mode-gravity'][mode]);const names=['Cinematic','EHT 230 GHz','GRAVITY NIR'];$('rMode').textContent=names[mode];document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',+b.dataset.mode===mode));if(mode===1){$('palette').value='1';PU.uPalette.value=1;$('polarization').checked=true;PU.uPolarization.value=1}else if(mode===2){$('palette').value='2';PU.uPalette.value=2;$('hotspot').checked=true;U.uHotspot.value=1}else{$('palette').value='0';PU.uPalette.value=0}historyFlip=false;markMoving(700)}
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode)));
+function triggerFlare(){state.flareStart=state.time;U.uHotAge.value=0;U.uHotPhase.value=Math.random()*Math.PI*2;PU.uHotPhase.value=U.uHotPhase.value;const r=5.1+Math.random()*1.5;U.uHotRadius.value=r;PU.uHotRadius.value=r;$('hotRadius').value=r;$('hotRadius').dispatchEvent(new Event('input'));U.uHotBrightness.value=1.8+Math.random()*1.6;$('hotBrightness').value=U.uHotBrightness.value;$('hotBrightness').dispatchEvent(new Event('input'));$('hotspot').checked=true;U.uHotspot.value=1;markMoving(200)}
+$('triggerFlare').addEventListener('click',triggerFlare);$('hotDirection').addEventListener('click',()=>{state.hotDir*=-1;U.uHotDir.value=state.hotDir;$('hotDirection').textContent=state.hotDir>0?'Prograde orbit':'Retrograde orbit'});
+
+const presets={earth:[-.12,27,18,1.15,0,0],face:[-.1,6,18,1.12,0,0],45:[-.25,45,18,1.12,0,0],edge:[-.18,83,20,1.05,0,0],polar:[1.1,88,19,1.08,0,0],close:[-.12,27,13,.72,0,0],wide:[-.12,27,30,1.5,.10,-.02]};
+function cameraPreset(name){const p=presets[name];state.targetYaw=p[0];state.targetPitch=THREE.MathUtils.degToRad(p[1]);state.targetDistance=p[2];state.targetFov=p[3];state.targetPanX=p[4];state.targetPanY=p[5];$('inclination').value=p[1];$('inclination').dispatchEvent(new Event('input'));markMoving(1500)}
+document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>cameraPreset(b.dataset.preset)));
+function reset(){cameraPreset('earth');setMode(0);state.time=0;state.paused=false;triggerFlare()}
+
+let dragging=false,shiftPan=false,lastX=0,lastY=0,vx=0,vy=0,pinchDistance=0;
+function markMoving(ms=250){state.movingUntil=performance.now()+ms}
+canvas.addEventListener('pointerdown',e=>{dragging=true;shiftPan=e.shiftKey;lastX=e.clientX;lastY=e.clientY;vx=vy=0;canvas.setPointerCapture(e.pointerId);markMoving(500)});
+canvas.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;vx=dx;vy=dy;if(shiftPan){state.targetPanX-=dx/innerHeight*state.fov;state.targetPanY+=dy/innerHeight*state.fov;state.targetPanX=THREE.MathUtils.clamp(state.targetPanX,-.28,.28);state.targetPanY=THREE.MathUtils.clamp(state.targetPanY,-.2,.2)}else{state.targetYaw-=dx*.004;state.targetPitch=THREE.MathUtils.clamp(state.targetPitch+dy*.0035,.01,1.553);$('inclination').value=THREE.MathUtils.radToDeg(state.targetPitch);$('inclination').dispatchEvent(new Event('input'))}markMoving(600)});
+canvas.addEventListener('pointerup',()=>{dragging=false;markMoving(700)});canvas.addEventListener('pointercancel',()=>dragging=false);
+canvas.addEventListener('wheel',e=>{e.preventDefault();state.targetFov=THREE.MathUtils.clamp(state.targetFov*Math.exp(e.deltaY*.0008),.42,2.1);markMoving(700)},{passive:false});
+canvas.addEventListener('dblclick',()=>cameraPreset('earth'));
+canvas.addEventListener('touchstart',e=>{if(e.touches.length===2)pinchDistance=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});
+canvas.addEventListener('touchmove',e=>{if(e.touches.length===2){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinchDistance)state.targetFov=THREE.MathUtils.clamp(state.targetFov*pinchDistance/d,.42,2.1);pinchDistance=d;markMoving(700)}},{passive:true});
+window.addEventListener('keydown',e=>{if(['INPUT','SELECT'].includes(document.activeElement.tagName))return;if(e.code==='Space'){e.preventDefault();state.paused=!state.paused}else if(e.key.toLowerCase()==='h')body.classList.toggle('hidden-ui');else if(e.key.toLowerCase()==='r')reset();else if(e.key.toLowerCase()==='f')triggerFlare();else if('123'.includes(e.key))setMode(+e.key-1)});
+
+$('collapseControls').addEventListener('click',()=>{const c=$('controls');c.classList.toggle('collapsed');$('collapseControls').textContent=c.classList.contains('collapsed')?'Show':'Hide'});$('controlsToggleMobile').addEventListener('click',()=>$('controls').classList.add('open'));$('closeControls').addEventListener('click',()=>$('controls').classList.remove('open'));
+
+function resize(){const dpr=Math.min(devicePixelRatio,1.75),scale=state.renderScale*state.adaptiveScale,w=Math.max(2,Math.floor(innerWidth*dpr*scale)),h=Math.max(2,Math.floor(innerHeight*dpr*scale));renderer.setPixelRatio(1);renderer.setSize(innerWidth,innerHeight,false);if(w!==renderW||h!==renderH){renderW=w;renderH=h;rebuildTargets()}U.uResolution.value.set(w,h);PU.uResolution.value.set(w,h);lastW=innerWidth;lastH=innerHeight}
+window.addEventListener('resize',resize);
+const precision=gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER,gl.HIGH_FLOAT);if(!precision||precision.precision<16){setQuality('low');$('quality').value='low';state.renderScale=.6;$('renderScale').value=.6}
+
+let previous=performance.now(),fpsStamp=previous,fpsFrames=0,slowFrames=0,fastFrames=0;
+function animate(now){requestAnimationFrame(animate);if(document.hidden)return;const dt=Math.min(.05,(now-previous)/1000);previous=now;if(!state.paused)state.time+=dt*state.timeScale;updateCamera();
+ U.uTime.value=state.time;U.uFrame.value=(U.uFrame.value+1)%4096;U.uHotAge.value=(state.time-state.flareStart)/Math.max(.1,U.uHotPeriod.value*6.283);PU.uTime.value=state.time;PU.uHotPhase.value=U.uHotPhase.value;PU.uHotPeriod.value=U.uHotPeriod.value;
+ if(innerWidth!==lastW||innerHeight!==lastH)resize();const moving=now<state.movingUntil;U.uSteps.value=($('adaptive').checked&&moving)?Math.min(state.baseSteps,56):state.baseSteps;
+ // Unbind last frame's sampled targets before attaching them as framebuffers; this prevents WebGL feedback-loop hazards across drivers.
+ PU.uCurrent.value=null;PU.uHistory.value=null;AU.uCurrent.value=null;AU.uPrevious.value=null;renderer.setRenderTarget(null);renderer.resetState();renderer.setRenderTarget(rtCurrent);renderer.render(scene,camera);
+ let historyTexture=rtCurrent.texture;if(state.mode===1){const prevRT=historyFlip?rtB:rtA,nextRT=historyFlip?rtA:rtB;AU.uCurrent.value=rtCurrent.texture;AU.uPrevious.value=prevRT.texture;AU.uBlend.value=parseFloat($('timeAverage').value);renderer.setRenderTarget(nextRT);renderer.render(accumScene,postCamera);historyFlip=!historyFlip;historyTexture=nextRT.texture}
+ PU.uCurrent.value=rtCurrent.texture;PU.uHistory.value=historyTexture;renderer.setRenderTarget(null);renderer.render(postScene,postCamera);
+ for(let i=retiredTargets.length-1;i>=0;i--){const old=retiredTargets[i];old.frames--;if(old.frames<=0){old.current.dispose();old.a.dispose();old.b.dispose();retiredTargets.splice(i,1)}}
+ fpsFrames++;if(now-fpsStamp>500){state.fps=fpsFrames*1000/(now-fpsStamp);$('rFps').textContent=Math.round(state.fps)+' fps';fpsFrames=0;fpsStamp=now;const phase=(U.uHotPhase.value+state.time*6.283/U.uHotPeriod.value)%(6.283);$('gPhase').textContent=Math.round((phase<0?phase+6.283:phase)*57.296)+'°';$('gOffset').textContent=(24+8*Math.abs(Math.cos(phase))).toFixed(1)+' μas';$('rTime').textContent=Math.round(state.timeScale*60)+'×';if($('adaptive').checked){if(state.fps<43)slowFrames++;else slowFrames=0;if(state.fps>57)fastFrames++;else fastFrames=0;if(slowFrames>3){state.renderScale=Math.max(.45,state.renderScale-.05);$('renderScale').value=state.renderScale;$('renderScale').dispatchEvent(new Event('input'));if(state.renderScale<=.5&&state.baseSteps>48)state.baseSteps-=8;slowFrames=0}if(fastFrames>9&&state.renderScale<parseFloat($('renderScale').max)){state.renderScale=Math.min(.9,state.renderScale+.05);$('renderScale').value=state.renderScale;resize();fastFrames=0}}}
+}
+
+try{resize();updateCamera();renderer.compile(scene,camera);renderer.compile(postScene,postCamera);renderer.compile(accumScene,postCamera);loading.classList.add('done');loading.style.display='none';requestAnimationFrame(animate)}catch(err){console.error(err);showError('The fragment shader could not be initialized on this GPU: '+err.message)}
+</script>
+</body>
+</html>
