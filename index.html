@@ -48,25 +48,25 @@ button,select{appearance:none;color:var(--ink);background:rgba(21,28,29,.76);bor
       <div class="control"><label for="inclination">Inclination</label><input id="inclination" type="range" min="0" max="89" step="1" value="27"><output></output></div>
       <div class="control"><label for="positionAngle">Position angle</label><input id="positionAngle" type="range" min="-180" max="180" step="1" value="-12"><output></output></div>
       <div class="control"><label for="flowDirection">Orbital direction</label><select id="flowDirection"><option value="1">Prograde</option><option value="-1">Retrograde</option></select></div>
-      <div class="control"><label for="quality">Lensing quality</label><select id="quality"><option value="low">Low · 80 steps</option><option value="medium" selected>Medium · 88</option><option value="high">High · 112</option><option value="ultra">Ultra · 144</option></select></div>
+      <div class="control"><label for="quality">Lensing quality</label><select id="quality"><option value="low">Low · 64 steps</option><option value="medium" selected>Medium · 84</option><option value="high">High · 128</option><option value="ultra">Ultra · 176</option></select></div>
       <div class="control"><label for="ringOrder">Photon-ring order</label><input id="ringOrder" type="range" min="0" max="3" step="1" value="2"><output></output></div>
       <div class="control"><label for="frameDrag">Frame dragging</label><input id="frameDrag" type="range" min="0" max="1.5" step=".01" value="1"><output></output></div>
       <div class="control"><label for="shadowScale">Shadow scale</label><input id="shadowScale" type="range" min=".7" max="1.3" step=".01" value="1"><output></output></div>
     </div></details>
     <details open><summary>Plasma</summary><div class="group">
-      <div class="control"><label for="flowBrightness">Flow brightness</label><input id="flowBrightness" type="range" min="0" max="3" step=".01" value="1.7"><output></output></div>
-      <div class="control"><label for="density">Density</label><input id="density" type="range" min=".1" max="3" step=".01" value="1.05"><output></output></div>
-      <div class="control"><label for="temperature">Electron temp.</label><input id="temperature" type="range" min=".2" max="3" step=".01" value="1.55"><output></output></div>
-      <div class="control"><label for="thickness">Torus thickness</label><input id="thickness" type="range" min=".15" max="1.2" step=".01" value=".58"><output></output></div>
-      <div class="control"><label for="innerRadius">Inner radius (r_g)</label><input id="innerRadius" type="range" min="1.3" max="8" step=".1" value="2.2"><output></output></div>
-      <div class="control"><label for="outerRadius">Outer radius (r_g)</label><input id="outerRadius" type="range" min="8" max="28" step=".1" value="14"><output></output></div>
+      <div class="control"><label for="flowBrightness">Flow brightness</label><input id="flowBrightness" type="range" min="0" max="3" step=".01" value="1.45"><output></output></div>
+      <div class="control"><label for="density">Density</label><input id="density" type="range" min=".1" max="3" step=".01" value=".96"><output></output></div>
+      <div class="control"><label for="temperature">Electron temp.</label><input id="temperature" type="range" min=".2" max="3" step=".01" value="1.35"><output></output></div>
+      <div class="control"><label for="thickness">Torus thickness</label><input id="thickness" type="range" min=".15" max="1.2" step=".01" value=".4"><output></output></div>
+      <div class="control"><label for="innerRadius">Inner radius (r_g)</label><input id="innerRadius" type="range" min="1.3" max="8" step=".1" value="3.4"><output></output></div>
+      <div class="control"><label for="outerRadius">Outer radius (r_g)</label><input id="outerRadius" type="range" min="8" max="28" step=".1" value="15"><output></output></div>
       <div class="control"><label for="rotationSpeed">Rotation speed</label><input id="rotationSpeed" type="range" min=".1" max="1.8" step=".01" value="1"><output></output></div>
-      <div class="control"><label for="turbulence">Turbulence</label><input id="turbulence" type="range" min="0" max="2" step=".01" value=".72"><output></output></div>
-      <div class="control"><label for="magCoherence">Mag. coherence</label><input id="magCoherence" type="range" min="0" max="1" step=".01" value=".62"><output></output></div>
+      <div class="control"><label for="turbulence">Turbulence</label><input id="turbulence" type="range" min="0" max="2" step=".01" value=".92"><output></output></div>
+      <div class="control"><label for="magCoherence">Mag. coherence</label><input id="magCoherence" type="range" min="0" max="1" step=".01" value=".7"><output></output></div>
       <div class="control"><label for="flowState">Magnetic state</label><select id="flowState"><option value="0" selected>SANE-like · turbulent</option><option value="1">MAD-like · organized arcs</option></select></div>
       <div class="control"><label for="densitySlope">Density slope</label><input id="densitySlope" type="range" min=".2" max="3" step=".01" value="1.25"><output></output></div>
       <div class="control"><label for="emissivityFalloff">Emissivity falloff</label><input id="emissivityFalloff" type="range" min=".3" max="3" step=".01" value="1.4"><output></output></div>
-      <div class="control"><label for="doppler">Doppler boost</label><input id="doppler" type="range" min="0" max="1.5" step=".01" value=".58"><output></output></div>
+      <div class="control"><label for="doppler">Doppler boost</label><input id="doppler" type="range" min="0" max="1.5" step=".01" value=".9"><output></output></div>
       <div class="control"><label for="redshift">Grav. redshift</label><input id="redshift" type="range" min="0" max="1.5" step=".01" value="1"><output></output></div>
     </div></details>
     <details><summary>Hotspot</summary><div class="group">
@@ -97,30 +97,30 @@ button,select{appearance:none;color:var(--ink);background:rgba(21,28,29,.76);bor
       <div class="control eht-only mode-only"><label for="scattering">Scattering blur</label><input id="scattering" type="range" min="0" max="2" step=".01" value=".55"><output></output></div>
       <div class="control eht-only mode-only"><label for="resolution">Angular resolution</label><input id="resolution" type="range" min="0" max="2" step=".01" value=".65"><output></output></div>
       <div class="control eht-only mode-only"><label for="artifacts">Sparse artifacts</label><input id="artifacts" type="checkbox"><span></span></div>
-      <div class="control eht-only mode-only"><label for="ehtCompare">Raw / average split</label><input id="ehtCompare" type="checkbox" checked><span></span></div>
+      <div class="control eht-only mode-only"><label for="ehtCompare">Raw / average split</label><input id="ehtCompare" type="checkbox"><span></span></div>
       <div class="control eht-only mode-only"><label for="polarizedIntensity">Polarized intensity</label><input id="polarizedIntensity" type="checkbox"><span></span></div>
       <div class="control gravity-only mode-only"><label for="astroTrail">Astrometric trail</label><input id="astroTrail" type="checkbox" checked><span></span></div>
       <div class="control"><label for="palette">False-colour palette</label><select id="palette"><option value="0">Physical warm</option><option value="1">EHT amber</option><option value="2">Inferno</option><option value="3">Monochrome</option></select></div>
     </div></details>
     <details><summary>Display</summary><div class="group">
-      <div class="control"><label for="bloom">Bloom</label><input id="bloom" type="range" min="0" max="2" step=".01" value=".62"><output></output></div>
+      <div class="control"><label for="bloom">Bloom</label><input id="bloom" type="range" min="0" max="2" step=".01" value=".82"><output></output></div>
       <div class="control"><label for="toneMapping">Tone mapping</label><select id="toneMapping"><option value="0">ACES filmic</option><option value="1">Reinhard</option><option value="2">Neutral</option></select></div>
-      <div class="control"><label for="exposure">Exposure</label><input id="exposure" type="range" min=".2" max="3" step=".01" value="1.15"><output></output></div>
-      <div class="control"><label for="background">Background stars</label><input id="background" type="range" min="0" max="2" step=".01" value=".72"><output></output></div>
-      <div class="control"><label for="dust">Dust lanes</label><input id="dust" type="range" min="0" max="2" step=".01" value=".75"><output></output></div>
+      <div class="control"><label for="exposure">Exposure</label><input id="exposure" type="range" min=".2" max="3" step=".01" value="1.28"><output></output></div>
+      <div class="control"><label for="background">Background stars</label><input id="background" type="range" min="0" max="2" step=".01" value=".82"><output></output></div>
+      <div class="control"><label for="dust">Dust lanes</label><input id="dust" type="range" min="0" max="2" step=".01" value=".9"><output></output></div>
       <div class="control"><label for="alignment">Background alignment</label><input id="alignment" type="range" min="-1" max="1" step=".005" value=".42"><output></output></div>
       <div class="control"><label for="grain">Film grain</label><input id="grain" type="range" min="0" max=".08" step=".001" value=".012"><output></output></div>
       <div class="control"><label for="glare">Camera glare</label><input id="glare" type="checkbox" checked><span></span></div>
       <div class="control"><label for="aberration">Camera aberration</label><input id="aberration" type="checkbox"><span></span></div>
       <div class="control"><label for="adaptive">Adaptive quality</label><input id="adaptive" type="checkbox" checked><span></span></div>
-      <div class="control"><label for="renderScale">Render resolution</label><input id="renderScale" type="range" min=".4" max="1" step=".05" value=".8"><output></output></div>
+      <div class="control"><label for="renderScale">Render resolution</label><input id="renderScale" type="range" min=".4" max="1" step=".05" value=".75"><output></output></div>
     </div></details>
   </div>
 </aside>
 <nav id="presets" class="ui panel" aria-label="Camera presets">
   <button data-preset="earth">Earth view</button><button data-preset="face">Face-on</button><button data-preset="45">45°</button><button data-preset="edge">Edge-on</button><button data-preset="polar">Polar</button><button data-preset="close">Photon ring</button><button data-preset="wide">Wide centre</button><span class="key">Drag · zoom · ⇧ pan · H UI</span>
 </nav>
-<div id="scaleBar"><div class="bar"></div>20 μas <span id="compareLabel">· RAW | AVERAGED</span></div>
+<div id="scaleBar"><div class="bar"></div>20 μas <span id="compareLabel" style="display:none">· RAW | AVERAGED</span></div>
 <div id="gravityData" class="ui panel"><div class="gravity-item"><b id="gPhase">0°</b><span>orbital phase</span></div><div class="gravity-item"><b id="gOffset">0 μas</b><span>projected offset</span></div><div class="gravity-item"><b id="gPeriod">70 min</b><span>model period</span></div></div>
 <div id="help">Space pause · R reset · F flare · 1–3 modes</div>
 
@@ -150,36 +150,51 @@ uniform float uBackground,uDust,uAlignment;
 float hash11(float p){p=fract(p*.1031);p*=p+33.33;p*=p+p;return fract(p);}
 float hash31(vec3 p){p=fract(p*.1031);p+=dot(p,p.yzx+33.33);return fract((p.x+p.y)*p.z);}
 float noise3(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(hash31(i),hash31(i+vec3(1,0,0)),f.x),mix(hash31(i+vec3(0,1,0)),hash31(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash31(i+vec3(0,0,1)),hash31(i+vec3(1,0,1)),f.x),mix(hash31(i+vec3(0,1,1)),hash31(i+vec3(1)),f.x),f.y),f.z);}
-float fbm(vec3 p){float a=.52,s=0.;mat3 m=mat3(.00,.80,.60,-.80,.36,-.48,-.60,-.48,.64);for(int i=0;i<4;i++){s+=a*noise3(p);p=m*p*2.03+1.7;a*=.5;}return s;}
+float fbm(vec3 p){float a=.54,s=0.;mat3 m=mat3(.00,.80,.60,-.80,.36,-.48,-.60,-.48,.64);for(int i=0;i<3;i++){s+=a*noise3(p);p=m*p*2.03+1.7;a*=.5;}return s;}
 mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
 vec3 palette(float x){
   x=max(0.,x);
-  if(uMode==1)return mix(vec3(.16,.012,.002),vec3(1.,.23,.006),smoothstep(.01,.45,x))+vec3(1.,.72,.19)*smoothstep(.45,1.7,x);
-  if(uMode==2)return mix(vec3(.055,.008,.003),vec3(1.,.32,.045),smoothstep(.05,.75,x))+vec3(1.,.82,.52)*smoothstep(.8,2.3,x);
-  return mix(vec3(.11,.012,.002),vec3(1.,.20,.025),smoothstep(.015,.5,x))+mix(vec3(1.,.38,.08),vec3(.88,1.,1.08),smoothstep(.5,2.2,x))*smoothstep(.35,2.2,x);
+  if(uMode==1)return vec3(min(x*1.9,1.),clamp(x*1.75-.16,0.,1.),clamp(x*2.5-1.25,0.,1.));
+  if(uMode==2)return mix(vec3(.018,.004,.002),vec3(1.,.24,.025),smoothstep(.025,.8,x))+vec3(1.,.72,.4)*smoothstep(.65,2.2,x);
+  // Cinematic is a visible-light interpretation of synchrotron intensity: deep
+  // copper at low emissivity, amber at the photospheric ridge, nearly white only
+  // in the hottest strongly blueshifted cells. It remains achromatic in lensing.
+  vec3 low=mix(vec3(.018,.0025,.001),vec3(.52,.045,.005),smoothstep(.006,.12,x));
+  vec3 mid=mix(low,vec3(1.,.4,.06),smoothstep(.08,.42,x));
+  return mix(mid,vec3(1.05,.95,.78),smoothstep(.22,.82,x));
 }
-float starLayer(vec3 d,float scale,float threshold){vec2 q=vec2(atan(d.z,d.x)/6.2831853+.5,asin(clamp(d.y,-1.,1.))/3.14159265+.5);vec2 g=floor(q*scale),f=fract(q*scale)-.5;float h=hash31(vec3(g,scale));vec2 o=vec2(hash11(h*83.1),hash11(h*151.7))-.5;float ds=length(f-o*.72);float core=exp(-ds*ds*900.);return core*pow(smoothstep(threshold,1.,h),18.);}
+float starLayer(vec3 d,float scale,float threshold){vec2 q=vec2(atan(d.z,d.x)/6.2831853+.5,asin(clamp(d.y,-1.,1.))/3.14159265+.5);vec2 g=floor(q*scale),f=fract(q*scale)-.5;float h=hash31(vec3(g,scale));vec2 o=vec2(hash11(h*83.1),hash11(h*151.7))-.5;float ds=dot(f-o*.72,f-o*.72);return exp(-ds*(1100.+scale*.8))*pow(smoothstep(threshold,1.,h),12.);}
+vec3 brightStar(vec3 d,vec3 sd,float b,vec3 tint){float a2=max(0.,2.*(1.-dot(d,sd)));return tint*b*(exp(-a2*70000.)*18.+exp(-a2*3500.)*.12);}
 vec3 background(vec3 d){
-  float band=exp(-pow((d.y+.10*sin(atan(d.z,d.x)*2.7))/0.23,2.));
-  float cloud=fbm(d*4.+vec3(0,0,uTime*.002));float dust=fbm(d*12.+8.);float lane=mix(1.,smoothstep(.18,.8,dust),uDust*.72*band);
-  float stars=starLayer(d,220.,.52)+.55*starLayer(d,410.,.61)+2.2*starLayer(d,95.,.76);
-  vec3 col=(vec3(.012,.009,.007)+band*vec3(.055,.035,.021)*(0.35+cloud))*lane;
-  col+=stars*uBackground*mix(vec3(.65,.76,1.),vec3(1.,.65,.32),hash11(floor(atan(d.z,d.x)*500.)));
+  vec3 gn=normalize(vec3(.22,.08,.972));float band=exp(-pow(dot(d,gn)*3.8,2.));
+  float cloud=fbm(d*4.2+vec3(0,0,uTime*.0008));float dust=fbm(d*11.7+vec3(7.1,3.2,9.4));
+  float lanes=smoothstep(.42,.76,.62*dust+.38*fbm(d*27.+5.))*uDust;
+  float stars=1.4*starLayer(d,150.,.54)+.85*starLayer(d,310.,.6)+.45*starLayer(d,560.,.65);
+  float tintSeed=hash11(floor((atan(d.z,d.x)+3.15)*850.));
+  vec3 col=vec3(.0007,.0009,.0012)+band*vec3(.032,.019,.009)*(0.32+1.05*cloud)*(1.-.9*lanes);
+  col+=stars*uBackground*mix(vec3(.60,.72,1.),vec3(1.,.66,.34),tintSeed)*(1.-.58*lanes);
+  col+=brightStar(d,normalize(vec3(.37,.64,.67)),.72,vec3(1.,.88,.68))*uBackground;
+  col+=brightStar(d,normalize(vec3(-.66,-.31,.68)),.48,vec3(.72,.82,1.))*uBackground;
   // A movable bright background star is sampled after lensing, so caustic crossings form multiple arc-like images.
-  vec3 sd=normalize(vec3(uAlignment*.13,.025,-1.));float sa=acos(clamp(dot(d,sd),-1.,1.));col+=vec3(1.,.78,.48)*3.5*exp(-sa*sa/0.000004)*uBackground;
+  vec3 sd=normalize(vec3(uAlignment*.13,.025,-1.));col+=brightStar(d,sd,1.35,vec3(1.,.79,.5))*uBackground;
   return col;
 }
 float torusDensity(vec3 p,float localT,out float filament){
-  float R=length(p.xy),z=abs(p.z),ph=atan(p.y,p.x);float h=max(.35,uThickness*(.34*R+1.));
-  float radial=smoothstep(uInner-.7,uInner+.5,R)*exp(-uDensitySlope*max(0.,R-uInner)/7.)*(1.-smoothstep(uOuter-1.,uOuter+5.,R));
-  radial+=.13*exp(-pow((R-uInner*.82)/1.8,2.));float vertical=exp(-pow(z/h,1.65));
-  float om=uRotation/(pow(max(R,2.2),1.5)+uSpin*float(uFlowDir));float adv=ph-float(uFlowDir)*localT*om*2.4;
-  vec3 q=vec3(R*.42,z*.55,adv*1.3);vec3 warp=vec3(fbm(q+1.7),fbm(q+8.1),fbm(q+15.9));
-  float n=fbm(q*1.7+(warp-.5)*2.7*uTurbulence);
-  float spiral=.5+.5*sin(adv*(uFlowState==1?3.:6.)+R*(uFlowState==1?1.35:2.15)+3.2*n);
-  float arcs=smoothstep(.4,.95,spiral)*mix(.55,1.45,uMagCoherence)*(uFlowState==1?1.25:.55);
-  filament=mix(n,arcs,.35+float(uFlowState)*.35);
-  return radial*vertical*mix(.35,1.75,clamp(n*.68+arcs*.32,0.,1.))*uDensity;
+  float R=max(length(p.xy),.001),z=p.z,ph=atan(p.y,p.x);float h=.16+uThickness*R;
+  float softInner=smoothstep(uInner*.58,uInner+.5,R);float diffuse=.28*exp(-pow((R-uInner*.72)/1.8,2.));
+  float outer=exp(-pow(max(R-uInner,0.)/max(uOuter-uInner,1.),2.)*2.7);
+  float radial=(softInner+diffuse)*outer*pow(max(R/uInner,1.),-uDensitySlope);
+  float vertical=exp(-.5*pow(abs(z)/h,1.75));
+  if(radial*vertical<.001){filament=0.;return 0.;}
+  float om=float(uFlowDir)*uRotation/max(pow(R,1.5)+float(uFlowDir)*uSpin,.42);float adv=ph-om*localT;
+  vec3 q=vec3(R*.34*cos(adv),R*.34*sin(adv),z*.72);float w1=fbm(q*.82+vec3(0,0,localT*.012));
+  vec3 warped=q+(vec3(w1,noise3(q*1.7+9.7),noise3(q*2.3+17.3))-.5)*(1.4+1.7*uTurbulence);
+  float n=fbm(warped*1.55+vec3(0,0,localT*.021));float fine=noise3(warped*5.1+vec3(localT*.018,0,0));
+  float spiral=.5+.5*sin((uFlowState==1?2.5:4.5)*adv-(uFlowState==1?4.2:7.2)*log(R)+4.1*w1);
+  float arcs=pow(smoothstep(.34,.94,spiral),1.4)*mix(.5,1.65,uMagCoherence);
+  float organized=mix(.35+.95*n*n,.25+1.55*arcs*(.45+.8*n),float(uFlowState));
+  float clumps=.72+.58*n+.22*(fine-.5);filament=clamp(.45*n+.75*arcs,0.,1.6);
+  return radial*vertical*organized*clumps*uDensity;
 }
 vec4 hotspotEmission(vec3 p,float pathTime){
   if(uHotspot==0)return vec4(0);
@@ -196,34 +211,50 @@ void main(){
   vec3 ro=uCamPos,rd=normalize(uCamForward+uCamRight*uv.x*uFov+uCamUp*uv.y*uFov);
   // The astronomical camera is kept outside the emitting flow. Rays are advanced analytically to a strong-field bounding sphere so distant empty space costs no integration steps.
   float boundR=max(24.,uOuter+6.);float rayB=dot(ro,rd),rayC=dot(ro,ro)-boundR*boundR,rayDisc=rayB*rayB-rayC;
-  if(rayDisc<0.){outColor=vec4(background(rd),1.);return;}
+  float bgGain=uMode==0?1.:(uMode==1?.006:.045);
+  if(rayDisc<0.){outColor=vec4(background(rd)*bgGain,1.);return;}
   float entry=max(0.,-rayB-sqrt(rayDisc));vec3 p=ro+rd*entry,v=rd;float travel=entry,alpha=0.,minR=1e4,turning=0.,lastDr=-1.;vec3 radiance=vec3(0);bool captured=false,escaped=false;
   float horizon=(1.+sqrt(max(.002,1.-uSpin*uSpin)))*uShadowScale;
   // Backward null-ray integration. This hybrid uses Schwarzschild bending plus a Kerr Lense-Thirring term; adaptive affine steps let near-critical rays orbit and accumulate higher-order emission.
-  for(int i=0;i<160;i++){
+  for(int i=0;i<176;i++){
     if(i>=uSteps)break;float r=length(p);minR=min(minR,r);if(r<horizon){captured=true;break;}if(r>boundR&&dot(p,v)>0.&&i>4){escaped=true;break;}
-    float stepLen=mix(.10,.82,smoothstep(2.1,18.,r));stepLen*=1.+.035*jitter;
+    float ps=abs(r-3.);float refine=exp(-ps*ps*.5)*clamp(float(uRingOrder)/2.,0.,1.);
+    float stepLen=mix(.055,.9,smoothstep(2.05,17.,r))*mix(1.,.4,refine);stepLen*=1.+.025*jitter;
     vec3 radial=p/max(r,1e-3);float dr=dot(v,radial);if(lastDr*dr<0.)turning+=1.;lastDr=dr;
-    float bend=2.05/(r*r+1.4);vec3 acc=-radial*bend;
-    vec3 spinAxis=vec3(0,0,1);vec3 drag=cross(spinAxis,p)/(r*r*r+1.)*uSpin*uFrameDrag*1.8;acc+=drag+cross(drag,v)*.72;
-    v=normalize(v+acc*stepLen);p+=v*stepLen;travel+=stepLen;r=length(p);
+    // Stable midpoint-force integration of the Schwarzschild null-ray equation.
+    // h=|x×v| is the impact angular momentum; refinement around r=3M lets
+    // near-critical rays make extra half-orbits and create higher-order images.
+    vec3 L=cross(p,v);float h2=dot(L,L);vec3 pm=p+v*(.5*stepLen);float rm=max(length(pm),1.05);
+    vec3 acc=(-3.*h2/pow(rm,5.))*pm;v=normalize(v+acc*stepLen);p+=v*stepLen;
+    // Kerr-inspired Lense-Thirring drift. Rotating both phase-space vectors is
+    // numerically bounded and produces the spin-controlled shadow asymmetry.
+    float wd=uFrameDrag*2.*uSpin/(rm*rm*rm)*stepLen;float cw=cos(wd),sw=sin(wd);
+    p.xy=mat2(cw,-sw,sw,cw)*p.xy;v.xy=mat2(cw,-sw,sw,cw)*v.xy;travel+=stepLen;r=length(p);
     if(r<uOuter+6.){
       float fil;float den=torusDensity(p,uTime-travel*.12,fil);if(den>.0005){
-        float R=max(1.5,length(p.xy));vec3 vel=float(uFlowDir)*normalize(vec3(-p.y,p.x,0.))*min(.61,.72/sqrt(R));float beta=length(vel);float gamma=inversesqrt(max(.15,1.-beta*beta));
-        float dop=1./(gamma*max(.28,1.-dot(vel,normalize(uCamPos-p))));
+        float R=max(1.5,length(p.xy));vec3 az=normalize(vec3(-p.y,p.x,0.))*float(uFlowDir);vec3 vel=az*min(.66,.88/sqrt(R));float beta=length(vel);float gamma=inversesqrt(max(.12,1.-beta*beta));
+        float dop=clamp(1./(gamma*max(.24,1.-dot(vel,normalize(uCamPos-p)))),.42,1.9);
         float grav=sqrt(max(.025,1.-2./max(r,2.02)+.28*uSpin*uSpin/(r*r)));
-        // Invariant synchrotron transfer is approximated by g^3 emissivity: gravitational redshift and SR Doppler/beaming jointly set brightness and colour temperature.
-        float g=pow(dop,mix(0.,2.35,uDoppler))*pow(grav,mix(0.,3.,uRedshift));
-        float temp=uTemperature*pow(max(R/uInner,1.),-.72);float em=den*pow(temp,1.25)*exp(-uFalloff*max(0.,R-uInner)/4.)*stepLen*.55;
-        float nearCritical=(1.-smoothstep(2.25,4.2,r))*(1.-smoothstep(.02,.7,abs(dr)));float order=min(float(uRingOrder),turning+nearCritical*2.);
-        em*=1.+nearCritical*order*.72;vec3 c=palette(em*g*uBrightness*(.62+fil*.7)*8.);radiance+=(1.-alpha)*c*em*g*uBrightness*5.;
-        vec4 hs=hotspotEmission(p,travel);radiance+=(1.-alpha)*hs.rgb*stepLen*.24;alpha+=den*stepLen*.018+hs.a*stepLen*.035;if(alpha>.97)break;
+        // g combines special-relativistic Doppler/beaming and gravitational
+        // redshift. Optically thin synchrotron specific intensity scales ~g^(3+α).
+        float edgeView=smoothstep(1.22,1.5,uInclination);float g=mix(1.,dop,clamp(uDoppler,0.,1.)*mix(1.,.3,edgeView))*mix(1.,grav,clamp(uRedshift,0.,1.));float boost=min(pow(max(g,.08),3.45),9.5);
+        float temp=uTemperature*pow(uInner/max(R,uInner*.62),.82);vec3 bdir=normalize(mix(vec3(.32*cos(atan(p.y,p.x)),.32*sin(atan(p.y,p.x)),1.),az,.72));
+        float pitch=.42+.78*(1.-pow(dot(bdir,v),2.));float fall=exp(-uFalloff*max(0.,R-uInner)/6.);
+        float em=den*den*(.18+temp)*pitch*fall*mix(1.,.46,edgeView);
+        float nearCritical=exp(-pow((r-3.)/.72,2.))*(1.-smoothstep(.08,.72,abs(dr)));float order=min(float(uRingOrder),turning+nearCritical*2.);
+        em*=1.+nearCritical*order*.48;float signal=em*boost*uBrightness*(.55+.72*fil);
+        vec3 c=palette(signal*(1.4+temp*g));radiance+=(1.-alpha)*c*signal*stepLen*7.;
+        vec4 hs=hotspotEmission(p,travel);radiance+=(1.-alpha)*hs.rgb*stepLen*.31;alpha+=den*stepLen*.011+hs.a*stepLen*.024;if(alpha>.985)break;
       }
     }
   }
-  if(!captured){radiance+=(1.-alpha)*background(normalize(v))*mix(.3,1.,smoothstep(2.,4.,minR));}
+  // Rays still trapped in the strong field when the bounded step budget ends
+  // represent a narrow near-critical set. Attenuating their accumulated volume
+  // prevents finite-step residence time from becoming a nonphysical bright fan.
+  if(!captured&&!escaped)radiance*=.28;
+  if(escaped){radiance+=(1.-alpha)*background(normalize(v))*bgGain*mix(.24,1.,smoothstep(2.2,4.4,minR));}
   // Capture stays genuinely black except for foreground optically thin plasma integrated before horizon crossing.
-  float shadowR=1.-smoothstep(horizon,horizon+.35,minR);radiance*=1.-shadowR*.34;
+  float shadowR=1.-smoothstep(horizon,horizon+.42,minR);radiance*=1.-shadowR*.88;
   if(uMode==2)radiance*=vec3(.82,.58,.45)*(uHotspot==1?1.25:.75);
   outColor=vec4(max(radiance,0.),1.);
 }`;
@@ -234,42 +265,45 @@ uniform sampler2D uCurrent,uHistory;uniform vec2 uResolution;uniform float uBloo
 uniform int uMode,uTone,uPalette,uAberration,uGlare,uArtifacts,uCompare,uPolarization,uPolarizedIntensity,uAstroTrail;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 vec3 sampleBlur(sampler2D t,vec2 uv,float rad){vec2 px=1./uResolution*rad;vec3 c=texture(t,uv).rgb*4.;c+=texture(t,uv+vec2(px.x,0)).rgb;c+=texture(t,uv-vec2(px.x,0)).rgb;c+=texture(t,uv+vec2(0,px.y)).rgb;c+=texture(t,uv-vec2(0,px.y)).rgb;c+=texture(t,uv+px).rgb;c+=texture(t,uv-px).rgb;return c/10.;}
+const vec2 B8[8]=vec2[8](vec2(.923,.382),vec2(.382,.923),vec2(-.382,.923),vec2(-.923,.382),vec2(-.923,-.382),vec2(-.382,-.923),vec2(.382,-.923),vec2(.923,-.382));
+vec3 wideBlur(sampler2D t,vec2 uv,float rad){vec2 px=rad/uResolution;vec3 c=texture(t,uv).rgb*.8;for(int i=0;i<8;i++)c+=texture(t,uv+B8[i]*px).rgb;return c/8.8;}
 vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}
 float seg(vec2 p,vec2 a,vec2 b){vec2 pa=p-a,ba=b-a;float h=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);return length(pa-ba*h);}
 void main(){
- vec2 uv=vUv;float ca=float(uAberration)*.0014*length(uv-.5);vec3 raw;if(uAberration==1&&uMode==0){raw=vec3(texture(uCurrent,uv+(uv-.5)*ca).r,texture(uCurrent,uv).g,texture(uCurrent,uv-(uv-.5)*ca).b);}else raw=texture(uCurrent,uv).rgb;
- float blur=(uMode==1)?(uScattering*1.6+uInstrument*1.2):.45;vec3 soft=sampleBlur(uCurrent,uv,blur);vec3 hist=texture(uHistory,uv).rgb;vec3 col=raw;
- if(uMode==1){col=mix(raw,soft,clamp((uScattering+uInstrument)*.28,0.,.78));col=mix(col,hist,uAverage);if(uCompare==1){col=uv.x<.5?raw:hist;if(abs(uv.x-.5)<.0012)col=vec3(.8);}}
- col+=max(soft-vec3(.16),0.)*uBloom*(uMode==1?.25:1.);
+ vec2 uv=vUv;float ca=float(uAberration)*.0012*length(uv-.5);vec3 raw;if(uAberration==1&&uMode==0){raw=vec3(texture(uCurrent,uv+(uv-.5)*ca).r,texture(uCurrent,uv).g,texture(uCurrent,uv-(uv-.5)*ca).b);}else raw=texture(uCurrent,uv).rgb;
+ float blur=(uMode==1)?(uScattering*1.7+uInstrument*1.25):.75;vec3 soft=sampleBlur(uCurrent,uv,blur);vec3 wide=wideBlur(uCurrent,uv,uMode==0?4.6:2.4);vec3 hist=texture(uHistory,uv).rgb;vec3 col=raw;
+ if(uMode==1){col=mix(raw,soft,clamp((uScattering+uInstrument)*.3,0.,.8));col=mix(col,hist,uAverage);if(uCompare==1){col=uv.x<.5?raw:hist;if(abs(uv.x-.5)<.00075)col=vec3(.22);}}
+ else if(uMode==0){vec3 bloomNear=max(soft-vec3(.11),0.),bloomFar=max(wide-vec3(.045),0.);col+=uBloom*(bloomNear*.58+bloomFar*.34);}
+ else col+=max(soft-vec3(.17),0.)*uBloom*.42;
  if(uArtifacts==1&&uMode==1){float ripple=sin(length(uv-.5)*uResolution.y*.18+sin(atan(uv.y-.5,uv.x-.5)*7.))*0.03;col*=1.+ripple;col+=vec3(.06,.018,0.)*step(.985,hash(floor(uv*uResolution/7.)));}
  vec2 p=(uv-.5)*vec2(uResolution.x/uResolution.y,1.);float rad=length(p);float ang=atan(p.y,p.x);
  if(uPolarization==1&&rad>.075&&rad<.27){float n=max(6.,uPolDensity),cell=floor((ang+3.14159)/6.28318*n);float a=(cell+.5)/n*6.28318-3.14159;float rr=.15+.025*sin(cell*2.17+uTime*.08);vec2 c=vec2(cos(a),sin(a))*rr;float projected=atan(cos(a)*cos(uInclination),-sin(a));float field=mix(projected,a+1.5708,uToroidal/(uToroidal+uPoloidal+.001))+uFaraday+sin(cell*1.7+uTime*.03)*(1.-uFieldCoherence);vec2 d=vec2(cos(field),sin(field))*.018;float tick=1.-smoothstep(.0011,.0035,seg(p,c-d,c+d));col+=vec3(.72,.92,1.)*tick*uPolFraction*(.5+.5*length(raw));}
- if(uMode==2&&uAstroTrail==1){float inc=uInclination;for(int i=0;i<40;i++){float t=float(i)/39.*6.28318;vec2 q=vec2(cos(t),sin(t)*cos(inc))*(.075+.007*uHotRadius);float trail=1.-smoothstep(.0012,.0032,length(p-q));col+=vec3(1.,.42,.12)*trail*.19;}float ph=uHotPhase+uTime*6.28318/max(.1,uHotPeriod),oldPh=ph-uExposureTime*.45;vec2 q=vec2(cos(ph),sin(ph)*cos(inc))*(.075+.007*uHotRadius),qOld=vec2(cos(oldPh),sin(oldPh)*cos(inc))*(.075+.007*uHotRadius);float streak=1.-smoothstep(.0015,.007,seg(p,qOld,q));col+=vec3(1.,.75,.35)*(exp(-dot(p-q,p-q)*9000.)*.9+streak*uExposureTime*.4);}
+ if(uMode==2&&uAstroTrail==1){float inc=uInclination,a=.075+.007*uHotRadius,b=max(.012,a*abs(cos(inc)));vec2 ep=p/vec2(a,b);float ellipse=abs(length(ep)-1.)*min(a,b);col+=vec3(1.,.28,.07)*exp(-ellipse*ellipse*240000.)*.12;float ph=uHotPhase+uTime*6.28318/max(.1,uHotPeriod),oldPh=ph-uExposureTime*.45;vec2 q=vec2(cos(ph)*a,sin(ph)*b),qOld=vec2(cos(oldPh)*a,sin(oldPh)*b);float streak=1.-smoothstep(.0014,.0065,seg(p,qOld,q));col+=vec3(1.,.75,.35)*(exp(-dot(p-q,p-q)*10500.)*.95+streak*uExposureTime*.34);float behind=smoothstep(-.15,.7,sin(ph)*sin(inc));vec2 sec=-normalize(q+vec2(.0001))*.105;col+=vec3(.52,.68,1.)*exp(-dot(p-sec,p-sec)*26000.)*.38*behind;}
  if(uPolarizedIntensity==1&&uMode==1)col*=.38+.9*abs(sin(ang*2.+uFaraday));
- if(uGlare==1&&uMode==0){float g=pow(max(0.,1.-abs(p.y)*90.),18.)*pow(max(0.,1.-abs(p.x)*1.7),8.);col+=vec3(1.,.55,.22)*g*max(0.,length(raw)-.8)*.05;}
+ if(uGlare==1&&uMode==0){float g=pow(max(0.,1.-abs(p.y)*92.),20.)*pow(max(0.,1.-abs(p.x)*1.6),9.);col+=vec3(1.,.52,.19)*g*max(0.,length(raw)-.75)*.028;}
  float lum=dot(col,vec3(.2126,.7152,.0722));if(uPalette==1)col=vec3(lum*1.55,lum*.48,lum*.035);else if(uPalette==2)col=mix(vec3(.025,.002,.09),vec3(1.,.055,.005),smoothstep(.02,.65,lum))+vec3(1.,.72,.16)*smoothstep(.62,1.5,lum);else if(uPalette==3)col=vec3(lum);
  col*=uExposure;if(uTone==0)col=aces(col);else if(uTone==1)col=col/(1.+col);else col=clamp(col,0.,1.);
- col+=(hash(gl_FragCoord.xy+uTime*83.)-.5)*uGrain*(uMode==0?1.:.3);col*=1.-.32*pow(length((uv-.5)*1.35),2.);
+ col+=(hash(gl_FragCoord.xy+uTime*83.)-.5)*uGrain*(uMode==0?.7:.22);col*=1.-.22*pow(length((uv-.5)*1.35),2.);
  outColor=vec4(max(col,0.),1.);
 }`;
 
-const accumFrag=`precision highp float;in vec2 vUv;out vec4 outColor;uniform sampler2D uCurrent,uPrevious;uniform float uBlend;void main(){vec3 c=texture(uCurrent,vUv).rgb,p=texture(uPrevious,vUv).rgb;outColor=vec4(mix(c,p,uBlend),1.);}`;
+const accumFrag=`precision highp float;in vec2 vUv;out vec4 outColor;uniform sampler2D uCurrent,uPrevious;uniform float uBlend;void main(){vec3 c=texture(uCurrent,vUv).rgb,p=texture(uPrevious,vUv).rgb;if(any(isnan(c))||any(isinf(c)))c=vec3(0);if(any(isnan(p))||any(isinf(p)))p=c;outColor=vec4(mix(c,p,uBlend),1.);}`;
 
 const renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.autoClear=false;
 const scene=new THREE.Scene(), camera=new THREE.Camera(), geometry=new THREE.PlaneGeometry(2,2);
 const U={};function uf(v){return{value:v}};function ui(v){return{value:v}};
-Object.assign(U,{uResolution:uf(new THREE.Vector2()),uTime:uf(0),uFrame:uf(0),uSpin:uf(.5),uInclination:uf(THREE.MathUtils.degToRad(27)),uPositionAngle:uf(-.21),uFrameDrag:uf(1),uShadowScale:uf(1),uCamPos:uf(new THREE.Vector3()),uCamRight:uf(new THREE.Vector3()),uCamUp:uf(new THREE.Vector3()),uCamForward:uf(new THREE.Vector3()),uPan:uf(new THREE.Vector3()),uFov:uf(.92),uSteps:ui(88),uRingOrder:ui(2),uMode:ui(0),uFlowState:ui(0),uFlowDir:ui(1),uBrightness:uf(1.7),uDensity:uf(1.05),uTemperature:uf(1.55),uThickness:uf(.58),uInner:uf(2.2),uOuter:uf(14),uRotation:uf(1),uTurbulence:uf(.72),uMagCoherence:uf(.62),uDensitySlope:uf(1.25),uFalloff:uf(1.4),uDoppler:uf(.58),uRedshift:uf(1),uHotspot:ui(1),uHotDir:ui(1),uHotRadius:uf(5.8),uHotPeriod:uf(7),uHotBrightness:uf(2.1),uHotAge:uf(0),uHotLifetime:uf(3.5),uHotShear:uf(.7),uHotCooling:uf(.55),uTrail:uf(.48),uHotPhase:uf(1.1),uBackground:uf(.72),uDust:uf(.75),uAlignment:uf(.42)});
+Object.assign(U,{uResolution:uf(new THREE.Vector2()),uTime:uf(0),uFrame:uf(0),uSpin:uf(.5),uInclination:uf(THREE.MathUtils.degToRad(27)),uPositionAngle:uf(-.21),uFrameDrag:uf(1),uShadowScale:uf(1),uCamPos:uf(new THREE.Vector3()),uCamRight:uf(new THREE.Vector3()),uCamUp:uf(new THREE.Vector3()),uCamForward:uf(new THREE.Vector3()),uPan:uf(new THREE.Vector3()),uFov:uf(.78),uSteps:ui(84),uRingOrder:ui(2),uMode:ui(0),uFlowState:ui(0),uFlowDir:ui(1),uBrightness:uf(1.45),uDensity:uf(.96),uTemperature:uf(1.35),uThickness:uf(.4),uInner:uf(3.4),uOuter:uf(15),uRotation:uf(1),uTurbulence:uf(.92),uMagCoherence:uf(.7),uDensitySlope:uf(1.25),uFalloff:uf(1.4),uDoppler:uf(.9),uRedshift:uf(1),uHotspot:ui(1),uHotDir:ui(1),uHotRadius:uf(5.8),uHotPeriod:uf(7),uHotBrightness:uf(2.1),uHotAge:uf(0),uHotLifetime:uf(3.5),uHotShear:uf(.7),uHotCooling:uf(.55),uTrail:uf(.48),uHotPhase:uf(1.1),uBackground:uf(.82),uDust:uf(.9),uAlignment:uf(.42)});
 const rayMaterial=new THREE.RawShaderMaterial({glslVersion:THREE.GLSL3,vertexShader:vert,fragmentShader:frag,uniforms:U,depthTest:false,depthWrite:false}),rayMesh=new THREE.Mesh(geometry,rayMaterial);rayMesh.frustumCulled=false;scene.add(rayMesh);
 const postScene=new THREE.Scene(),postCamera=new THREE.Camera();
-const PU={uCurrent:uf(null),uHistory:uf(null),uResolution:uf(new THREE.Vector2()),uBloom:uf(.62),uExposure:uf(1.15),uExposureTime:uf(.18),uGrain:uf(.012),uTime:uf(0),uScattering:uf(.55),uInstrument:uf(.65),uAverage:uf(.92),uFaraday:uf(.35),uPolFraction:uf(.45),uPolDensity:uf(18),uToroidal:uf(.75),uPoloidal:uf(.35),uFieldCoherence:uf(.72),uInclination:uf(U.uInclination.value),uHotRadius:uf(5.8),uHotPhase:uf(1.1),uHotPeriod:uf(7),uMode:ui(0),uTone:ui(0),uPalette:ui(0),uAberration:ui(0),uGlare:ui(1),uArtifacts:ui(0),uCompare:ui(1),uPolarization:ui(0),uPolarizedIntensity:ui(0),uAstroTrail:ui(1)};
+const PU={uCurrent:uf(null),uHistory:uf(null),uResolution:uf(new THREE.Vector2()),uBloom:uf(.82),uExposure:uf(1.28),uExposureTime:uf(.18),uGrain:uf(.012),uTime:uf(0),uScattering:uf(.55),uInstrument:uf(.65),uAverage:uf(.92),uFaraday:uf(.35),uPolFraction:uf(.45),uPolDensity:uf(18),uToroidal:uf(.75),uPoloidal:uf(.35),uFieldCoherence:uf(.72),uInclination:uf(U.uInclination.value),uHotRadius:uf(5.8),uHotPhase:uf(1.1),uHotPeriod:uf(7),uMode:ui(0),uTone:ui(0),uPalette:ui(0),uAberration:ui(0),uGlare:ui(1),uArtifacts:ui(0),uCompare:ui(0),uPolarization:ui(0),uPolarizedIntensity:ui(0),uAstroTrail:ui(1)};
 const postMaterial=new THREE.RawShaderMaterial({glslVersion:THREE.GLSL3,vertexShader:vert,fragmentShader:postFrag,uniforms:PU,depthTest:false,depthWrite:false}),postMesh=new THREE.Mesh(geometry,postMaterial);postMesh.frustumCulled=false;postScene.add(postMesh);
 const accumScene=new THREE.Scene(),AU={uCurrent:uf(null),uPrevious:uf(null),uBlend:uf(.92)};const accumMaterial=new THREE.RawShaderMaterial({glslVersion:THREE.GLSL3,vertexShader:vert,fragmentShader:accumFrag,uniforms:AU,depthTest:false,depthWrite:false}),accumMesh=new THREE.Mesh(geometry,accumMaterial);accumMesh.frustumCulled=false;accumScene.add(accumMesh);
 
-let rtCurrent,rtA,rtB,historyFlip=false,renderW=1,renderH=1;const retiredTargets=[];
+let rtCurrent,rtA,rtB,historyFlip=false,historyValid=false,renderW=1,renderH=1;const retiredTargets=[];
 function makeRT(w,h){return new THREE.WebGLRenderTarget(w,h,{type:THREE.HalfFloatType,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,depthBuffer:false,stencilBuffer:false});}
-function rebuildTargets(){renderer.setRenderTarget(null);AU.uCurrent.value=null;AU.uPrevious.value=null;PU.uCurrent.value=null;PU.uHistory.value=null;renderer.resetState();if(rtCurrent)retiredTargets.push({current:rtCurrent,a:rtA,b:rtB,frames:4});rtCurrent=makeRT(renderW,renderH);rtA=makeRT(renderW,renderH);rtB=makeRT(renderW,renderH);historyFlip=false;renderer.setRenderTarget(rtA);renderer.clear();renderer.setRenderTarget(rtB);renderer.clear();renderer.setRenderTarget(null);renderer.resetState();}
+function rebuildTargets(){renderer.setRenderTarget(null);AU.uCurrent.value=null;AU.uPrevious.value=null;PU.uCurrent.value=null;PU.uHistory.value=null;renderer.resetState();if(rtCurrent)retiredTargets.push({current:rtCurrent,a:rtA,b:rtB,frames:4});rtCurrent=makeRT(renderW,renderH);rtA=makeRT(renderW,renderH);rtB=makeRT(renderW,renderH);historyFlip=false;historyValid=false;renderer.setRenderTarget(rtA);renderer.clear();renderer.setRenderTarget(rtB);renderer.clear();renderer.setRenderTarget(null);renderer.resetState();}
 
-const state={yaw:-.12,pitch:THREE.MathUtils.degToRad(27),distance:50,fov:.92,panX:0,panY:0,targetYaw:-.12,targetPitch:THREE.MathUtils.degToRad(27),targetDistance:50,targetFov:.92,targetPanX:0,targetPanY:0,time:0,timeScale:600/60,paused:false,mode:0,renderScale:.8,adaptiveScale:1,movingUntil:0,flareStart:0,hotDir:1,fps:60,quality:'medium',baseSteps:88};
+const state={yaw:-.12,pitch:THREE.MathUtils.degToRad(27),distance:42,fov:.78,panX:0,panY:0,targetYaw:-.12,targetPitch:THREE.MathUtils.degToRad(27),targetDistance:42,targetFov:.78,targetPanX:0,targetPanY:0,time:0,timeScale:600/60,paused:false,mode:0,renderScale:.75,adaptiveScale:1,movingUntil:0,flareStart:0,hotDir:1,fps:60,quality:'medium',baseSteps:84};
 const camPos=new THREE.Vector3(),forward=new THREE.Vector3(),right=new THREE.Vector3(),up=new THREE.Vector3(),worldUp=new THREE.Vector3(0,0,1),tmp=new THREE.Vector3();
 function updateCamera(){state.yaw+=(state.targetYaw-state.yaw)*.085;state.pitch+=(state.targetPitch-state.pitch)*.085;state.distance+=(state.targetDistance-state.distance)*.09;state.fov+=(state.targetFov-state.fov)*.09;state.panX+=(state.targetPanX-state.panX)*.09;state.panY+=(state.targetPanY-state.panY)*.09;/* Astronomical inclination is measured from the spin axis: 0° is face-on and 90° is edge-on. */let si=Math.sin(state.pitch);camPos.set(Math.sin(state.yaw)*si,-Math.cos(state.yaw)*si,Math.cos(state.pitch)).multiplyScalar(state.distance);forward.copy(camPos).multiplyScalar(-1).normalize();right.crossVectors(forward,worldUp);if(right.lengthSq()<.001)right.set(1,0,0);else right.normalize();up.crossVectors(right,forward).normalize();U.uCamPos.value.copy(camPos);U.uCamForward.value.copy(forward);U.uCamRight.value.copy(right);U.uCamUp.value.copy(up);U.uFov.value=state.fov;U.uPan.value.set(state.panX,state.panY,0);}
 
@@ -280,21 +314,21 @@ function applySpecial(id,v){if(id==='inclination'){state.targetPitch=THREE.MathU
 function bindSelect(id,fn){$(id).addEventListener('change',()=>{fn($(id).value);markMoving(350)})}
 bindSelect('flowDirection',v=>U.uFlowDir.value=+v);bindSelect('flowState',v=>U.uFlowState.value=+v);bindSelect('quality',setQuality);bindSelect('obsMode',v=>setMode(+v));bindSelect('toneMapping',v=>PU.uTone.value=+v);bindSelect('palette',v=>PU.uPalette.value=+v);
 const checks={hotspot:['uHotspot',U],polarization:['uPolarization',PU],artifacts:['uArtifacts',PU],ehtCompare:['uCompare',PU],polarizedIntensity:['uPolarizedIntensity',PU],astroTrail:['uAstroTrail',PU],glare:['uGlare',PU],aberration:['uAberration',PU]};
-for(const id in checks){const el=$(id),[key,obj]=checks[id];const update=()=>obj[key].value=el.checked?1:0;el.addEventListener('change',update);update()}
+for(const id in checks){const el=$(id),[key,obj]=checks[id];const update=()=>{obj[key].value=el.checked?1:0;if(id==='ehtCompare')$('compareLabel').style.display=el.checked?'inline':'none'};el.addEventListener('change',update);update()}
 
-function setQuality(v){state.quality=v;const map={low:80,medium:88,high:112,ultra:144};state.baseSteps=map[v];U.uSteps.value=state.baseSteps;markMoving(500)}
-function setMode(mode){state.mode=mode;U.uMode.value=mode;PU.uMode.value=mode;$('obsMode').value=mode;body.classList.remove('mode-cinematic','mode-eht','mode-gravity');body.classList.add(['mode-cinematic','mode-eht','mode-gravity'][mode]);const names=['Cinematic','EHT 230 GHz','GRAVITY NIR'];$('rMode').textContent=names[mode];document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',+b.dataset.mode===mode));historyFlip=false;markMoving(700)}
+function setQuality(v){state.quality=v;const map={low:64,medium:84,high:128,ultra:176};state.baseSteps=map[v];U.uSteps.value=state.baseSteps;markMoving(500)}
+function setMode(mode){state.mode=mode;U.uMode.value=mode;PU.uMode.value=mode;$('obsMode').value=mode;body.classList.remove('mode-cinematic','mode-eht','mode-gravity');body.classList.add(['mode-cinematic','mode-eht','mode-gravity'][mode]);const names=['Cinematic','EHT 230 GHz','GRAVITY NIR'];$('rMode').textContent=names[mode];document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',+b.dataset.mode===mode));historyFlip=false;historyValid=false;markMoving(700)}
 document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode)));
 function triggerFlare(){state.flareStart=state.time;U.uHotAge.value=0;U.uHotPhase.value=Math.random()*Math.PI*2;PU.uHotPhase.value=U.uHotPhase.value;const r=5.1+Math.random()*1.5;U.uHotRadius.value=r;PU.uHotRadius.value=r;$('hotRadius').value=r;$('hotRadius').dispatchEvent(new Event('input'));U.uHotBrightness.value=1.8+Math.random()*1.6;$('hotBrightness').value=U.uHotBrightness.value;$('hotBrightness').dispatchEvent(new Event('input'));$('hotspot').checked=true;U.uHotspot.value=1;markMoving(200)}
 $('triggerFlare').addEventListener('click',triggerFlare);$('hotDirection').addEventListener('click',()=>{state.hotDir*=-1;U.uHotDir.value=state.hotDir;$('hotDirection').textContent=state.hotDir>0?'Prograde orbit':'Retrograde orbit'});
 
-const presets={earth:[-.12,27,50,.92,0,0],face:[-.1,6,50,.92,0,0],45:[-.25,45,50,.92,0,0],edge:[-.18,83,52,.88,0,0],polar:[1.1,1,52,.9,0,0],close:[-.12,27,48,.55,0,0],wide:[-.12,27,72,1.18,.08,-.02]};
+const presets={earth:[-.12,27,42,.78,0,0],face:[-.1,6,44,.8,0,0],45:[-.25,45,43,.8,0,0],edge:[-.18,84,46,.76,0,0],polar:[1.1,1,44,.8,0,0],close:[-.12,27,38,.47,0,0],wide:[-.12,27,76,1.12,.08,-.02]};
 function cameraPreset(name){const p=presets[name];state.targetYaw=p[0];state.targetPitch=THREE.MathUtils.degToRad(p[1]);state.targetDistance=p[2];state.targetFov=p[3];state.targetPanX=p[4];state.targetPanY=p[5];$('inclination').value=p[1];$('inclination').dispatchEvent(new Event('input'));markMoving(1500)}
 document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>cameraPreset(b.dataset.preset)));
 function reset(){cameraPreset('earth');setMode(0);state.time=0;state.paused=false;triggerFlare()}
 
 let dragging=false,shiftPan=false,lastX=0,lastY=0,vx=0,vy=0,pinchDistance=0;
-function markMoving(ms=250){state.movingUntil=performance.now()+ms}
+function markMoving(ms=250){state.movingUntil=performance.now()+ms;historyValid=false}
 canvas.addEventListener('pointerdown',e=>{dragging=true;shiftPan=e.shiftKey;lastX=e.clientX;lastY=e.clientY;vx=vy=0;canvas.setPointerCapture(e.pointerId);markMoving(500)});
 canvas.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;vx=dx;vy=dy;if(shiftPan){state.targetPanX-=dx/innerHeight*state.fov;state.targetPanY+=dy/innerHeight*state.fov;state.targetPanX=THREE.MathUtils.clamp(state.targetPanX,-.28,.28);state.targetPanY=THREE.MathUtils.clamp(state.targetPanY,-.2,.2)}else{state.targetYaw-=dx*.004;state.targetPitch=THREE.MathUtils.clamp(state.targetPitch+dy*.0035,.01,1.553);$('inclination').value=THREE.MathUtils.radToDeg(state.targetPitch);$('inclination').dispatchEvent(new Event('input'))}markMoving(600)});
 canvas.addEventListener('pointerup',()=>{dragging=false;markMoving(700)});canvas.addEventListener('pointercancel',()=>dragging=false);
@@ -313,13 +347,15 @@ const precision=gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER,gl.HIGH_FLOAT);if
 let previous=performance.now(),fpsStamp=previous,fpsFrames=0,slowFrames=0,fastFrames=0;
 function animate(now){requestAnimationFrame(animate);if(document.hidden)return;const dt=Math.min(.05,(now-previous)/1000);previous=now;if(!state.paused)state.time+=dt*state.timeScale;updateCamera();
  U.uTime.value=state.time;U.uFrame.value=(U.uFrame.value+1)%4096;U.uHotAge.value=(state.time-state.flareStart)/Math.max(.1,U.uHotPeriod.value*6.283);PU.uTime.value=state.time;PU.uHotPhase.value=U.uHotPhase.value;PU.uHotPeriod.value=U.uHotPeriod.value;
- if(innerWidth!==lastW||innerHeight!==lastH)resize();const moving=now<state.movingUntil;/* Edge-on rays spend longer in the thick flow and need extra crossings to reveal the shadow and rear-side image. */const viewSteps=state.pitch>1.22?Math.max(state.baseSteps,112):state.baseSteps;U.uSteps.value=($('adaptive').checked&&moving)?Math.min(viewSteps,80):viewSteps;
+ if(innerWidth!==lastW||innerHeight!==lastH)resize();const moving=now<state.movingUntil;/* Edge-on rays spend longer in the thick flow and need extra crossings to reveal the shadow and rear-side image. */const viewSteps=state.pitch>1.22?Math.max(state.baseSteps,112):state.baseSteps;U.uSteps.value=($('adaptive').checked&&moving)?Math.min(viewSteps,64):viewSteps;
  // Unbind last frame's sampled targets before attaching them as framebuffers; this prevents WebGL feedback-loop hazards across drivers.
  PU.uCurrent.value=null;PU.uHistory.value=null;AU.uCurrent.value=null;AU.uPrevious.value=null;renderer.setRenderTarget(null);renderer.resetState();renderer.setRenderTarget(rtCurrent);renderer.render(scene,camera);
- let historyTexture=rtCurrent.texture;if(state.mode===1){const prevRT=historyFlip?rtB:rtA,nextRT=historyFlip?rtA:rtB;AU.uCurrent.value=rtCurrent.texture;AU.uPrevious.value=prevRT.texture;AU.uBlend.value=parseFloat($('timeAverage').value);renderer.setRenderTarget(nextRT);renderer.render(accumScene,postCamera);historyFlip=!historyFlip;historyTexture=nextRT.texture}
+ // Temporal accumulation is used in every mode: gentle TAA in cinematic mode,
+ // exposure integration in GRAVITY, and user-controlled time averaging for EHT.
+ const prevRT=historyFlip?rtB:rtA,nextRT=historyFlip?rtA:rtB;AU.uCurrent.value=rtCurrent.texture;AU.uPrevious.value=prevRT.texture;let histBlend=state.mode===1?parseFloat($('timeAverage').value):(state.mode===2?Math.min(.58,.16+parseFloat($('exposureTime').value)*.34):(moving?.08:.58));AU.uBlend.value=historyValid?histBlend:0;renderer.setRenderTarget(nextRT);renderer.render(accumScene,postCamera);historyFlip=!historyFlip;historyValid=true;let historyTexture=nextRT.texture;
  PU.uCurrent.value=rtCurrent.texture;PU.uHistory.value=historyTexture;renderer.setRenderTarget(null);renderer.render(postScene,postCamera);
  for(let i=retiredTargets.length-1;i>=0;i--){const old=retiredTargets[i];old.frames--;if(old.frames<=0){old.current.dispose();old.a.dispose();old.b.dispose();retiredTargets.splice(i,1)}}
- fpsFrames++;if(now-fpsStamp>500){state.fps=fpsFrames*1000/(now-fpsStamp);$('rFps').textContent=Math.round(state.fps)+' fps';fpsFrames=0;fpsStamp=now;const phase=(U.uHotPhase.value+state.time*6.283/U.uHotPeriod.value)%(6.283);$('gPhase').textContent=Math.round((phase<0?phase+6.283:phase)*57.296)+'°';$('gOffset').textContent=(24+8*Math.abs(Math.cos(phase))).toFixed(1)+' μas';$('rTime').textContent=Math.round(state.timeScale*60)+'×';if($('adaptive').checked){if(state.fps<43)slowFrames++;else slowFrames=0;if(state.fps>57)fastFrames++;else fastFrames=0;if(slowFrames>3){state.renderScale=Math.max(.45,state.renderScale-.05);$('renderScale').value=state.renderScale;$('renderScale').dispatchEvent(new Event('input'));if(state.renderScale<=.5&&state.baseSteps>80)state.baseSteps=Math.max(80,state.baseSteps-8);slowFrames=0}if(fastFrames>9&&state.renderScale<parseFloat($('renderScale').max)){state.renderScale=Math.min(.9,state.renderScale+.05);$('renderScale').value=state.renderScale;resize();fastFrames=0}}}
+ fpsFrames++;if(now-fpsStamp>500){state.fps=fpsFrames*1000/(now-fpsStamp);$('rFps').textContent=Math.round(state.fps)+' fps';fpsFrames=0;fpsStamp=now;const phase=(U.uHotPhase.value+state.time*6.283/U.uHotPeriod.value)%(6.283);$('gPhase').textContent=Math.round((phase<0?phase+6.283:phase)*57.296)+'°';$('gOffset').textContent=(24+8*Math.abs(Math.cos(phase))).toFixed(1)+' μas';$('rTime').textContent=Math.round(state.timeScale*60)+'×';if($('adaptive').checked){if(state.fps<43)slowFrames++;else slowFrames=0;if(state.fps>57)fastFrames++;else fastFrames=0;if(slowFrames>3){state.renderScale=Math.max(.4,state.renderScale-.05);$('renderScale').value=state.renderScale;$('renderScale').dispatchEvent(new Event('input'));if(state.renderScale<=.5&&state.baseSteps>64)state.baseSteps=Math.max(64,state.baseSteps-8);slowFrames=0}if(fastFrames>9&&state.renderScale<parseFloat($('renderScale').max)){state.renderScale=Math.min(.9,state.renderScale+.05);$('renderScale').value=state.renderScale;resize();fastFrames=0}}}
 }
 
 try{resize();updateCamera();renderer.compile(scene,camera);renderer.compile(postScene,postCamera);renderer.compile(accumScene,postCamera);loading.classList.add('done');loading.style.display='none';requestAnimationFrame(animate)}catch(err){console.error(err);showError('The fragment shader could not be initialized on this GPU: '+err.message)}
