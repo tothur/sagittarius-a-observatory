@@ -70,7 +70,7 @@ button,select{appearance:none;color:var(--ink);background:rgba(21,28,29,.76);bor
       <div class="control"><label for="redshift">Grav. redshift</label><input id="redshift" type="range" min="0" max="1.5" step=".01" value="1"><output></output></div>
     </div></details>
     <details><summary>Hotspot</summary><div class="group">
-      <div class="control"><label for="hotspot">Enable hotspot</label><input id="hotspot" type="checkbox" checked><span></span></div>
+      <div class="control"><label for="hotspot">Enable hotspot</label><input id="hotspot" type="checkbox"><span></span></div>
       <div class="button-row"><button id="triggerFlare">Trigger flare · F</button><button id="hotDirection">Prograde orbit</button></div>
       <div class="control"><label for="hotRadius">Orbital radius</label><input id="hotRadius" type="range" min="3.2" max="10" step=".1" value="5.8"><output></output></div>
       <div class="control"><label for="hotPeriod">Period (minutes)</label><input id="hotPeriod" type="range" min="20" max="140" step="1" value="70"><output></output></div>
@@ -237,12 +237,15 @@ void main(){
         float grav=sqrt(max(.025,1.-2./max(r,2.02)+.28*uSpin*uSpin/(r*r)));
         // g combines special-relativistic Doppler/beaming and gravitational
         // redshift. Optically thin synchrotron specific intensity scales ~g^(3+α).
-        float edgeView=smoothstep(1.22,1.5,uInclination);float g=mix(1.,dop,clamp(uDoppler,0.,1.)*mix(1.,.3,edgeView))*mix(1.,grav,clamp(uRedshift,0.,1.));float boost=min(pow(max(g,.08),3.45),9.5);
+        float edgeView=smoothstep(1.22,1.5,uInclination);float g=mix(1.,dop,clamp(uDoppler,0.,1.)*mix(1.,.18,edgeView))*mix(1.,grav,clamp(uRedshift,0.,1.));float boost=min(pow(max(g,.08),3.45),mix(9.5,7.5,edgeView));
         float temp=uTemperature*pow(uInner/max(R,uInner*.62),.82);vec3 bdir=normalize(mix(vec3(.32*cos(atan(p.y,p.x)),.32*sin(atan(p.y,p.x)),1.),az,.72));
         float pitch=.42+.78*(1.-pow(dot(bdir,v),2.));float fall=exp(-uFalloff*max(0.,R-uInner)/6.);
+        /* Long edge-on sightlines cross much more optically thin plasma. Reduce
+           per-step weight instead of flattening the torus, preserving a thick
+           RIAF while preventing path-length saturation from becoming stripes. */
         float em=den*den*(.18+temp)*pitch*fall*mix(1.,.46,edgeView);
         float nearCritical=exp(-pow((r-3.)/.72,2.))*(1.-smoothstep(.08,.72,abs(dr)));float order=min(float(uRingOrder),turning+nearCritical*2.);
-        em*=1.+nearCritical*order*.48;float signal=em*boost*uBrightness*(.55+.72*fil);
+        em*=1.+nearCritical*order*mix(.48,.90,edgeView)+edgeView*.16*min(turning,2.);float signal=em*boost*uBrightness*(.55+.72*fil);
         vec3 c=palette(signal*(1.4+temp*g));radiance+=(1.-alpha)*c*signal*stepLen*7.;
         vec4 hs=hotspotEmission(p,travel);radiance+=(1.-alpha)*hs.rgb*stepLen*.31;alpha+=den*stepLen*.011+hs.a*stepLen*.024;if(alpha>.985)break;
       }
@@ -254,7 +257,7 @@ void main(){
   if(!captured&&!escaped)radiance*=.28;
   if(escaped){radiance+=(1.-alpha)*background(normalize(v))*bgGain*mix(.24,1.,smoothstep(2.2,4.4,minR));}
   // Capture stays genuinely black except for foreground optically thin plasma integrated before horizon crossing.
-  float shadowR=1.-smoothstep(horizon,horizon+.42,minR);radiance*=1.-shadowR*.88;
+  float edgeShadow=smoothstep(1.22,1.5,uInclination);/* At high inclination the finite step budget can miss marginal captures; minR supplies a conservative geodesic-derived shadow fallback. */float captureProxy=horizon+edgeShadow*.35;float shadowR=1.-smoothstep(captureProxy,captureProxy+.42,minR);radiance*=1.-shadowR*mix(.88,.96,edgeShadow);
   if(uMode==2)radiance*=vec3(.82,.58,.45)*(uHotspot==1?1.25:.75);
   outColor=vec4(max(radiance,0.),1.);
 }`;
@@ -282,7 +285,7 @@ void main(){
  if(uPolarizedIntensity==1&&uMode==1)col*=.38+.9*abs(sin(ang*2.+uFaraday));
  if(uGlare==1&&uMode==0){float g=pow(max(0.,1.-abs(p.y)*92.),20.)*pow(max(0.,1.-abs(p.x)*1.6),9.);col+=vec3(1.,.52,.19)*g*max(0.,length(raw)-.75)*.028;}
  float lum=dot(col,vec3(.2126,.7152,.0722));if(uPalette==1)col=vec3(lum*1.55,lum*.48,lum*.035);else if(uPalette==2)col=mix(vec3(.025,.002,.09),vec3(1.,.055,.005),smoothstep(.02,.65,lum))+vec3(1.,.72,.16)*smoothstep(.62,1.5,lum);else if(uPalette==3)col=vec3(lum);
- col*=uExposure;if(uTone==0)col=aces(col);else if(uTone==1)col=col/(1.+col);else col=clamp(col,0.,1.);
+ float edgeExposure=mix(1.,1.35,smoothstep(1.22,1.5,uInclination));col*=uExposure*edgeExposure;if(uTone==0)col=aces(col);else if(uTone==1)col=col/(1.+col);else col=clamp(col,0.,1.);
  col+=(hash(gl_FragCoord.xy+uTime*83.)-.5)*uGrain*(uMode==0?.7:.22);col*=1.-.22*pow(length((uv-.5)*1.35),2.);
  outColor=vec4(max(col,0.),1.);
 }`;
@@ -292,7 +295,7 @@ const accumFrag=`precision highp float;in vec2 vUv;out vec4 outColor;uniform sam
 const renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.autoClear=false;
 const scene=new THREE.Scene(), camera=new THREE.Camera(), geometry=new THREE.PlaneGeometry(2,2);
 const U={};function uf(v){return{value:v}};function ui(v){return{value:v}};
-Object.assign(U,{uResolution:uf(new THREE.Vector2()),uTime:uf(0),uFrame:uf(0),uSpin:uf(.5),uInclination:uf(THREE.MathUtils.degToRad(27)),uPositionAngle:uf(-.21),uFrameDrag:uf(1),uShadowScale:uf(1),uCamPos:uf(new THREE.Vector3()),uCamRight:uf(new THREE.Vector3()),uCamUp:uf(new THREE.Vector3()),uCamForward:uf(new THREE.Vector3()),uPan:uf(new THREE.Vector3()),uFov:uf(.78),uSteps:ui(84),uRingOrder:ui(2),uMode:ui(0),uFlowState:ui(0),uFlowDir:ui(1),uBrightness:uf(1.45),uDensity:uf(.96),uTemperature:uf(1.35),uThickness:uf(.4),uInner:uf(3.4),uOuter:uf(15),uRotation:uf(1),uTurbulence:uf(.92),uMagCoherence:uf(.7),uDensitySlope:uf(1.25),uFalloff:uf(1.4),uDoppler:uf(.9),uRedshift:uf(1),uHotspot:ui(1),uHotDir:ui(1),uHotRadius:uf(5.8),uHotPeriod:uf(7),uHotBrightness:uf(2.1),uHotAge:uf(0),uHotLifetime:uf(3.5),uHotShear:uf(.7),uHotCooling:uf(.55),uTrail:uf(.48),uHotPhase:uf(1.1),uBackground:uf(.82),uDust:uf(.9),uAlignment:uf(.42)});
+Object.assign(U,{uResolution:uf(new THREE.Vector2()),uTime:uf(0),uFrame:uf(0),uSpin:uf(.5),uInclination:uf(THREE.MathUtils.degToRad(27)),uPositionAngle:uf(-.21),uFrameDrag:uf(1),uShadowScale:uf(1),uCamPos:uf(new THREE.Vector3()),uCamRight:uf(new THREE.Vector3()),uCamUp:uf(new THREE.Vector3()),uCamForward:uf(new THREE.Vector3()),uPan:uf(new THREE.Vector3()),uFov:uf(.78),uSteps:ui(84),uRingOrder:ui(2),uMode:ui(0),uFlowState:ui(0),uFlowDir:ui(1),uBrightness:uf(1.45),uDensity:uf(.96),uTemperature:uf(1.35),uThickness:uf(.4),uInner:uf(3.4),uOuter:uf(15),uRotation:uf(1),uTurbulence:uf(.92),uMagCoherence:uf(.7),uDensitySlope:uf(1.25),uFalloff:uf(1.4),uDoppler:uf(.9),uRedshift:uf(1),uHotspot:ui(0),uHotDir:ui(1),uHotRadius:uf(5.8),uHotPeriod:uf(7),uHotBrightness:uf(2.1),uHotAge:uf(0),uHotLifetime:uf(3.5),uHotShear:uf(.7),uHotCooling:uf(.55),uTrail:uf(.48),uHotPhase:uf(1.1),uBackground:uf(.82),uDust:uf(.9),uAlignment:uf(.42)});
 const rayMaterial=new THREE.RawShaderMaterial({glslVersion:THREE.GLSL3,vertexShader:vert,fragmentShader:frag,uniforms:U,depthTest:false,depthWrite:false}),rayMesh=new THREE.Mesh(geometry,rayMaterial);rayMesh.frustumCulled=false;scene.add(rayMesh);
 const postScene=new THREE.Scene(),postCamera=new THREE.Camera();
 const PU={uCurrent:uf(null),uHistory:uf(null),uResolution:uf(new THREE.Vector2()),uBloom:uf(.82),uExposure:uf(1.28),uExposureTime:uf(.18),uGrain:uf(.012),uTime:uf(0),uScattering:uf(.55),uInstrument:uf(.65),uAverage:uf(.92),uFaraday:uf(.35),uPolFraction:uf(.45),uPolDensity:uf(18),uToroidal:uf(.75),uPoloidal:uf(.35),uFieldCoherence:uf(.72),uInclination:uf(U.uInclination.value),uHotRadius:uf(5.8),uHotPhase:uf(1.1),uHotPeriod:uf(7),uMode:ui(0),uTone:ui(0),uPalette:ui(0),uAberration:ui(0),uGlare:ui(1),uArtifacts:ui(0),uCompare:ui(0),uPolarization:ui(0),uPolarizedIntensity:ui(0),uAstroTrail:ui(1)};
@@ -303,7 +306,7 @@ let rtCurrent,rtA,rtB,historyFlip=false,historyValid=false,renderW=1,renderH=1;c
 function makeRT(w,h){return new THREE.WebGLRenderTarget(w,h,{type:THREE.HalfFloatType,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,depthBuffer:false,stencilBuffer:false});}
 function rebuildTargets(){renderer.setRenderTarget(null);AU.uCurrent.value=null;AU.uPrevious.value=null;PU.uCurrent.value=null;PU.uHistory.value=null;renderer.resetState();if(rtCurrent)retiredTargets.push({current:rtCurrent,a:rtA,b:rtB,frames:4});rtCurrent=makeRT(renderW,renderH);rtA=makeRT(renderW,renderH);rtB=makeRT(renderW,renderH);historyFlip=false;historyValid=false;renderer.setRenderTarget(rtA);renderer.clear();renderer.setRenderTarget(rtB);renderer.clear();renderer.setRenderTarget(null);renderer.resetState();}
 
-const state={yaw:-.12,pitch:THREE.MathUtils.degToRad(27),distance:42,fov:.78,panX:0,panY:0,targetYaw:-.12,targetPitch:THREE.MathUtils.degToRad(27),targetDistance:42,targetFov:.78,targetPanX:0,targetPanY:0,time:0,timeScale:120/60,paused:false,mode:0,renderScale:.75,adaptiveScale:1,movingUntil:0,flareStart:0,hotDir:1,fps:60,quality:'medium',baseSteps:84};
+const state={yaw:-.12,pitch:THREE.MathUtils.degToRad(27),distance:42,fov:.78,panX:0,panY:0,targetYaw:-.12,targetPitch:THREE.MathUtils.degToRad(27),targetDistance:42,targetFov:.78,targetPanX:0,targetPanY:0,time:15,timeScale:120/60,paused:false,mode:0,renderScale:.75,adaptiveScale:1,movingUntil:0,flareStart:15,hotDir:1,fps:60,quality:'medium',baseSteps:84};
 const camPos=new THREE.Vector3(),forward=new THREE.Vector3(),right=new THREE.Vector3(),up=new THREE.Vector3(),worldUp=new THREE.Vector3(0,0,1),tmp=new THREE.Vector3();
 function updateCamera(){state.yaw+=(state.targetYaw-state.yaw)*.085;state.pitch+=(state.targetPitch-state.pitch)*.085;state.distance+=(state.targetDistance-state.distance)*.09;state.fov+=(state.targetFov-state.fov)*.09;state.panX+=(state.targetPanX-state.panX)*.09;state.panY+=(state.targetPanY-state.panY)*.09;/* Astronomical inclination is measured from the spin axis: 0° is face-on and 90° is edge-on. */let si=Math.sin(state.pitch);camPos.set(Math.sin(state.yaw)*si,-Math.cos(state.yaw)*si,Math.cos(state.pitch)).multiplyScalar(state.distance);forward.copy(camPos).multiplyScalar(-1).normalize();right.crossVectors(forward,worldUp);if(right.lengthSq()<.001)right.set(1,0,0);else right.normalize();up.crossVectors(right,forward).normalize();U.uCamPos.value.copy(camPos);U.uCamForward.value.copy(forward);U.uCamRight.value.copy(right);U.uCamUp.value.copy(up);U.uFov.value=state.fov;U.uPan.value.set(state.panX,state.panY,0);}
 
@@ -317,21 +320,15 @@ const checks={hotspot:['uHotspot',U],polarization:['uPolarization',PU],artifacts
 for(const id in checks){const el=$(id),[key,obj]=checks[id];const update=()=>{obj[key].value=el.checked?1:0;if(id==='ehtCompare')$('compareLabel').style.display=el.checked?'inline':'none'};el.addEventListener('change',update);update()}
 
 function setQuality(v){state.quality=v;const map={low:64,medium:84,high:128,ultra:176};state.baseSteps=map[v];U.uSteps.value=state.baseSteps;markMoving(500)}
-function setMode(mode){state.mode=mode;U.uMode.value=mode;PU.uMode.value=mode;$('obsMode').value=mode;body.classList.remove('mode-cinematic','mode-eht','mode-gravity');body.classList.add(['mode-cinematic','mode-eht','mode-gravity'][mode]);const names=['Cinematic','EHT 230 GHz','GRAVITY NIR'];$('rMode').textContent=names[mode];document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',+b.dataset.mode===mode));if(currentPreset==='edge')applyEdgeProfile();else restoreEdgeProfile();historyFlip=false;historyValid=false;markMoving(700)}
+function setMode(mode){state.mode=mode;U.uMode.value=mode;PU.uMode.value=mode;$('obsMode').value=mode;body.classList.remove('mode-cinematic','mode-eht','mode-gravity');body.classList.add(['mode-cinematic','mode-eht','mode-gravity'][mode]);const names=['Cinematic','EHT 230 GHz','GRAVITY NIR'];$('rMode').textContent=names[mode];document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',+b.dataset.mode===mode));historyFlip=false;historyValid=false;markMoving(700)}
 document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode)));
 function triggerFlare(){state.flareStart=state.time;U.uHotAge.value=0;U.uHotPhase.value=Math.random()*Math.PI*2;PU.uHotPhase.value=U.uHotPhase.value;const r=5.1+Math.random()*1.5;U.uHotRadius.value=r;PU.uHotRadius.value=r;$('hotRadius').value=r;$('hotRadius').dispatchEvent(new Event('input'));U.uHotBrightness.value=1.8+Math.random()*1.6;$('hotBrightness').value=U.uHotBrightness.value;$('hotBrightness').dispatchEvent(new Event('input'));$('hotspot').checked=true;U.uHotspot.value=1;markMoving(200)}
 $('triggerFlare').addEventListener('click',triggerFlare);$('hotDirection').addEventListener('click',()=>{state.hotDir*=-1;U.uHotDir.value=state.hotDir;$('hotDirection').textContent=state.hotDir>0?'Prograde orbit':'Retrograde orbit'});
 
-const presets={earth:[-.12,27,42,.78,0,0],face:[-.1,6,44,.8,0,0],45:[-.25,45,43,.8,0,0],edge:[-.18,84,42,.52,0,0],polar:[1.1,1,44,.8,0,0],close:[-.12,27,38,.47,0,0],wide:[-.12,27,76,1.12,.08,-.02]};
-const edgeProfile={quality:'high',positionAngle:-1,flowBrightness:[2.66,1.9,1.35],density:[2.33,1.5,1.1],thickness:.15};
-let currentPreset='earth',edgeProfileRestore=null;
-function setControl(id,value,eventName){const el=$(id);el.value=value;el.dispatchEvent(new Event(eventName,{bubbles:true}))}
-/* The edge-on camera is intentionally a presentation profile: a thin apparent equatorial layer reveals the shadow and the lensed rear-side arc. Each observing mode still applies its own wavelength, exposure and instrument response. */
-function applyEdgeProfile(){if(!edgeProfileRestore)edgeProfileRestore={quality:$('quality').value,positionAngle:$('positionAngle').value,flowBrightness:$('flowBrightness').value,density:$('density').value,thickness:$('thickness').value};setControl('quality',edgeProfile.quality,'change');setControl('positionAngle',edgeProfile.positionAngle,'input');setControl('flowBrightness',edgeProfile.flowBrightness[state.mode],'input');setControl('density',edgeProfile.density[state.mode],'input');setControl('thickness',edgeProfile.thickness,'input')}
-function restoreEdgeProfile(){if(!edgeProfileRestore)return;const saved=edgeProfileRestore;edgeProfileRestore=null;setControl('quality',saved.quality,'change');for(const id of ['positionAngle','flowBrightness','density','thickness'])setControl(id,saved[id],'input')}
-function cameraPreset(name){currentPreset=name;if(name==='edge')applyEdgeProfile();else restoreEdgeProfile();const p=presets[name];state.targetYaw=p[0];state.targetPitch=THREE.MathUtils.degToRad(p[1]);state.targetDistance=p[2];state.targetFov=p[3];state.targetPanX=p[4];state.targetPanY=p[5];$('inclination').value=p[1];$('inclination').dispatchEvent(new Event('input'));markMoving(1500)}
+const presets={earth:[-.12,27,42,.78,0,0],face:[-.1,6,44,.8,0,0],45:[-.25,45,43,.8,0,0],edge:[-.18,84,40,.46,0,0],polar:[1.1,1,44,.8,0,0],close:[-.12,27,38,.47,0,0],wide:[-.12,27,76,1.12,.08,-.02]};
+function cameraPreset(name){const p=presets[name];state.targetYaw=p[0];state.targetPitch=THREE.MathUtils.degToRad(p[1]);state.targetDistance=p[2];state.targetFov=p[3];state.targetPanX=p[4];state.targetPanY=p[5];$('inclination').value=p[1];$('inclination').dispatchEvent(new Event('input'));markMoving(1500)}
 document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>cameraPreset(b.dataset.preset)));
-function reset(){cameraPreset('earth');setMode(0);state.time=0;state.paused=false;triggerFlare()}
+function reset(){cameraPreset('earth');setMode(0);state.time=15;state.flareStart=15;state.paused=false;$('hotspot').checked=false;$('hotspot').dispatchEvent(new Event('change'));markMoving(700)}
 
 let dragging=false,shiftPan=false,lastX=0,lastY=0,vx=0,vy=0,pinchDistance=0;
 function markMoving(ms=250){state.movingUntil=performance.now()+ms;historyValid=false}
@@ -353,12 +350,12 @@ const precision=gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER,gl.HIGH_FLOAT);if
 let previous=performance.now(),fpsStamp=previous,fpsFrames=0,slowFrames=0,fastFrames=0;
 function animate(now){requestAnimationFrame(animate);if(document.hidden)return;const dt=Math.min(.05,(now-previous)/1000);previous=now;if(!state.paused)state.time+=dt*state.timeScale;updateCamera();
  U.uTime.value=state.time;U.uFrame.value=(U.uFrame.value+1)%4096;U.uHotAge.value=(state.time-state.flareStart)/Math.max(.1,U.uHotPeriod.value*6.283);PU.uTime.value=state.time;PU.uHotPhase.value=U.uHotPhase.value;PU.uHotPeriod.value=U.uHotPeriod.value;
- if(innerWidth!==lastW||innerHeight!==lastH)resize();const moving=now<state.movingUntil;/* Edge-on rays spend longer in the thick flow and need extra crossings to reveal the shadow and rear-side image. */const viewSteps=state.pitch>1.22?Math.max(state.baseSteps,112):state.baseSteps;U.uSteps.value=($('adaptive').checked&&moving)?Math.min(viewSteps,64):viewSteps;
+ if(innerWidth!==lastW||innerHeight!==lastH)resize();const moving=now<state.movingUntil;/* Edge-on rays need the selected quality budget to preserve multiple flow crossings; camera motion still drops to 64 steps. */const viewSteps=state.pitch>1.22?Math.max(state.baseSteps,84):state.baseSteps;U.uSteps.value=($('adaptive').checked&&moving)?Math.min(viewSteps,64):viewSteps;
  // Unbind last frame's sampled targets before attaching them as framebuffers; this prevents WebGL feedback-loop hazards across drivers.
  PU.uCurrent.value=null;PU.uHistory.value=null;AU.uCurrent.value=null;AU.uPrevious.value=null;renderer.setRenderTarget(null);renderer.resetState();renderer.setRenderTarget(rtCurrent);renderer.render(scene,camera);
  // Temporal accumulation is used in every mode: gentle TAA in cinematic mode,
  // exposure integration in GRAVITY, and user-controlled time averaging for EHT.
- const prevRT=historyFlip?rtB:rtA,nextRT=historyFlip?rtA:rtB;AU.uCurrent.value=rtCurrent.texture;AU.uPrevious.value=prevRT.texture;let histBlend=state.mode===1?parseFloat($('timeAverage').value):(state.mode===2?Math.min(.58,.16+parseFloat($('exposureTime').value)*.34):(moving?.08:.58));AU.uBlend.value=historyValid?histBlend:0;renderer.setRenderTarget(nextRT);renderer.render(accumScene,postCamera);historyFlip=!historyFlip;historyValid=true;let historyTexture=nextRT.texture;
+ const prevRT=historyFlip?rtB:rtA,nextRT=historyFlip?rtA:rtB;AU.uCurrent.value=rtCurrent.texture;AU.uPrevious.value=prevRT.texture;const cinematicBlend=moving?.08:(state.pitch>1.22?.16:.58);let histBlend=state.mode===1?parseFloat($('timeAverage').value):(state.mode===2?Math.min(.58,.16+parseFloat($('exposureTime').value)*.34):cinematicBlend);AU.uBlend.value=historyValid?histBlend:0;renderer.setRenderTarget(nextRT);renderer.render(accumScene,postCamera);historyFlip=!historyFlip;historyValid=true;let historyTexture=nextRT.texture;
  PU.uCurrent.value=rtCurrent.texture;PU.uHistory.value=historyTexture;renderer.setRenderTarget(null);renderer.render(postScene,postCamera);
  for(let i=retiredTargets.length-1;i>=0;i--){const old=retiredTargets[i];old.frames--;if(old.frames<=0){old.current.dispose();old.a.dispose();old.b.dispose();retiredTargets.splice(i,1)}}
  fpsFrames++;if(now-fpsStamp>500){state.fps=fpsFrames*1000/(now-fpsStamp);$('rFps').textContent=Math.round(state.fps)+' fps';fpsFrames=0;fpsStamp=now;const phase=(U.uHotPhase.value+state.time*6.283/U.uHotPeriod.value)%(6.283);$('gPhase').textContent=Math.round((phase<0?phase+6.283:phase)*57.296)+'°';$('gOffset').textContent=(24+8*Math.abs(Math.cos(phase))).toFixed(1)+' μas';$('rTime').textContent=Math.round(state.timeScale*60)+'×';if($('adaptive').checked){if(state.fps<43)slowFrames++;else slowFrames=0;if(state.fps>57)fastFrames++;else fastFrames=0;if(slowFrames>3){state.renderScale=Math.max(.4,state.renderScale-.05);$('renderScale').value=state.renderScale;$('renderScale').dispatchEvent(new Event('input'));if(state.renderScale<=.5&&state.baseSteps>64)state.baseSteps=Math.max(64,state.baseSteps-8);slowFrames=0}if(fastFrames>9&&state.renderScale<parseFloat($('renderScale').max)){state.renderScale=Math.min(.9,state.renderScale+.05);$('renderScale').value=state.renderScale;resize();fastFrames=0}}}
