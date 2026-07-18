@@ -314,10 +314,7 @@ void main(){
   // Capture stays genuinely black except for foreground optically thin plasma integrated before horizon crossing.
   float edgeShadow=smoothstep(1.22,1.5,uInclination);/* At high inclination the finite step budget can miss marginal captures; minR supplies a conservative geodesic-derived shadow fallback for the optically thin Sgr A* flow. It is disabled for the opaque disk so foreground photospheric light is never erased. */float captureProxy=horizon+edgeShadow*.35;float shadowR=1.-smoothstep(captureProxy,captureProxy+.42,minR);radiance*=1.-shadowR*mix(.88,.96,edgeShadow)*(1.-float(uObject));
   if(uMode==2)radiance*=vec3(.82,.58,.45)*(uHotspot==1?1.25:.75);
-  // Keep the geodesic-selected critical curve just wide enough to survive the
-  // adaptive internal resolution. Its centre still comes from accumulated
-  // path angle, so high spin/inclination retain their non-circular Kerr shape.
-  float criticalMask=exp(-pow((angularSweep-3.75)/.08,2.))*smoothstep(.00001,.006,emittedEnergy)*clamp(float(uRingOrder)/3.,0.,1.);
+  float criticalMask=exp(-pow((angularSweep-4.23)/.10,2.))*smoothstep(.00001,.006,emittedEnergy)*clamp(float(uRingOrder)/3.,0.,1.);
   outColor=vec4(max(radiance,0.),criticalMask);
 }`;
 
@@ -327,13 +324,12 @@ uniform sampler2D uCurrent,uHistory;uniform vec2 uResolution;uniform float uBloo
 uniform int uMode,uObject,uTone,uPalette,uAberration,uGlare,uArtifacts,uCompare,uPolarization,uPolarizedIntensity,uAstroTrail;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 vec3 sampleBlur(sampler2D t,vec2 uv,float rad){vec2 px=1./uResolution*rad;vec3 c=texture(t,uv).rgb*4.;c+=texture(t,uv+vec2(px.x,0)).rgb;c+=texture(t,uv-vec2(px.x,0)).rgb;c+=texture(t,uv+vec2(0,px.y)).rgb;c+=texture(t,uv-vec2(0,px.y)).rgb;c+=texture(t,uv+px).rgb;c+=texture(t,uv-px).rgb;return c/10.;}
-float sampleAlphaBlur(sampler2D t,vec2 uv,float rad){vec2 px=rad/uResolution;float a=texture(t,uv).a*2.;a+=texture(t,uv+vec2(px.x,0)).a;a+=texture(t,uv-vec2(px.x,0)).a;a+=texture(t,uv+vec2(0,px.y)).a;a+=texture(t,uv-vec2(0,px.y)).a;return a/6.;}
 const vec2 B8[8]=vec2[8](vec2(.923,.382),vec2(.382,.923),vec2(-.382,.923),vec2(-.923,.382),vec2(-.923,-.382),vec2(-.382,-.923),vec2(.382,-.923),vec2(.923,-.382));
 vec3 wideBlur(sampler2D t,vec2 uv,float rad){vec2 px=rad/uResolution;vec3 c=texture(t,uv).rgb*.8;for(int i=0;i<8;i++)c+=texture(t,uv+B8[i]*px).rgb;return c/8.8;}
 vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}
 float seg(vec2 p,vec2 a,vec2 b){vec2 pa=p-a,ba=b-a;float h=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);return length(pa-ba*h);}
 void main(){
- vec2 uv=vUv;float ca=float(uAberration)*.0012*length(uv-.5);vec4 rawSample=texture(uCurrent,uv);vec3 raw;if(uAberration==1&&uMode==0){raw=vec3(texture(uCurrent,uv+(uv-.5)*ca).r,rawSample.g,texture(uCurrent,uv-(uv-.5)*ca).b);}else raw=rawSample.rgb;float critical=max(rawSample.a,texture(uHistory,uv).a*.82);vec2 criticalPlane=(uv-.5)*vec2(uResolution.x/uResolution.y,1.);vec2 criticalDir=normalize(criticalPlane+vec2(.000001))/vec2(uResolution.x/uResolution.y,1.);/* The opaque luminous photosphere hides the exact critical curve at finite resolution. Reproject the path mask a few pixels toward the captured region, approximating the unresolved placement of the limiting higher-order image inside the observed shadow edge. */vec2 criticalOffset=criticalDir*(mix(1.6,24.0,float(uObject))/uResolution.y);float criticalInset=max(texture(uCurrent,uv+criticalOffset).a,texture(uHistory,uv+criticalOffset).a*.82);float criticalInsetSoft=max(sampleAlphaBlur(uCurrent,uv+criticalOffset,1.25),sampleAlphaBlur(uHistory,uv+criticalOffset,1.25)*.82);
+ vec2 uv=vUv;float ca=float(uAberration)*.0012*length(uv-.5);vec4 rawSample=texture(uCurrent,uv);vec3 raw;if(uAberration==1&&uMode==0){raw=vec3(texture(uCurrent,uv+(uv-.5)*ca).r,rawSample.g,texture(uCurrent,uv-(uv-.5)*ca).b);}else raw=rawSample.rgb;float critical=max(rawSample.a,texture(uHistory,uv).a*.82);
  float blur=(uMode==1)?(uScattering*1.7+uInstrument*1.25):.75;vec3 soft=sampleBlur(uCurrent,uv,blur);vec3 wide=wideBlur(uCurrent,uv,uMode==0?4.6:2.4);vec3 hist=texture(uHistory,uv).rgb;vec3 col=raw;
  if(uMode==1){col=mix(raw,soft,clamp((uScattering+uInstrument)*.3,0.,.8));col=mix(col,hist,uAverage);if(uCompare==1){col=uv.x<.5?raw:hist;if(abs(uv.x-.5)<.00075)col=vec3(.22);}}
  else if(uMode==0){/* TAA stabilizes turbulent high-order rays, but the path-carried critical mask keeps the photon subrings sharp. */float taaMix=(uAberration==1)?0.:mix(.56,.38,smoothstep(1.22,1.5,uInclination));if(uPalette==4)taaMix*=.72;taaMix=mix(taaMix,min(taaMix,.14),critical);col=mix(raw,hist,taaMix);col+=max(raw-soft,0.)*critical*mix(.32,.58,float(uObject));vec3 bloomNear=max(soft-vec3(.11),0.),bloomFar=max(wide-vec3(.045),0.);float printBloom=uPalette==4?.38:1.;col+=uBloom*(bloomNear*.58+bloomFar*.34)*mix(1.,1.12,float(uObject))*printBloom;}
@@ -347,13 +343,8 @@ void main(){
  // At finite pixel size the exponentially narrow subrings need an unresolved
  // surface-brightness reconstruction. Its position and strength come entirely
  // from the path-carried critical mask; this is not a circular image overlay.
- vec3 rawChroma=clamp(raw/max(dot(raw,vec3(.2126,.7152,.0722)),.02),vec3(.25),vec3(2.5));vec3 criticalTint=mix(vec3(1.,.11,.012),rawChroma,.12);col+=criticalTint*pow(critical,1.12)*mix(.08,.24,float(uObject));
+ vec3 rawChroma=clamp(raw/max(dot(raw,vec3(.2126,.7152,.0722)),.02),vec3(.25),vec3(2.5));vec3 criticalTint=mix(vec3(1.,.11,.012),rawChroma,.12);col+=criticalTint*pow(critical,1.25)*mix(.10,.52,float(uObject));
  float lum=dot(col,vec3(.2126,.7152,.0722));if(uPalette==1)col=vec3(lum*1.55,lum*.48,lum*.035);else if(uPalette==2)col=mix(vec3(.025,.002,.09),vec3(1.,.055,.005),smoothstep(.02,.65,lum))+vec3(1.,.72,.16)*smoothstep(.62,1.5,lum);else if(uPalette==3)col=vec3(lum);else if(uPalette==4){/* Deliberately cinematic print interpretation. An asymptotic highlight shoulder never hard-clips HDR radiance, while its soft toe preserves dim secondary images. */vec3 detailed=max(col+(raw-soft)*mix(.24,.58,critical),0.);float dlum=dot(detailed,vec3(.2126,.7152,.0722));float l=pow(1.-exp(-.42*log2(1.+4.*max(dlum,0.))),.92);vec3 grade=mix(vec3(.005,.0013,.0006),vec3(.56,.09,.025),smoothstep(.005,.25,l));grade=mix(grade,vec3(1.,.40,.22),smoothstep(.24,.70,l));grade=mix(grade,vec3(1.08,.82,.70),smoothstep(.68,.98,l));vec3 sourceChroma=clamp(detailed/max(dlum,.001),vec3(.72),vec3(1.34));col=grade*mix(vec3(1.),sourceChroma,.10)*mix(.25,1.25,l);}
- // Resolve the sub-pixel critical curve after false-colour grading, where it
- // cannot be washed into the opaque disk's ivory photosphere. Both the bright
- // core and its narrow contrast moat are filtered from the path-carried mask;
- // no screen-space circle or ellipse is introduced.
- float ringDisplay=uMode==0?1.:.16;float ringCore=smoothstep(.72,.94,criticalInset);float ringEnvelope=smoothstep(.28,.64,criticalInsetSoft);float ringMoat=max(ringEnvelope-ringCore*.52,0.);col*=1.-ringMoat*ringDisplay*mix(.06,.28,float(uObject));vec3 resolvedRing=uPalette==4?vec3(2.45,.46,.018):mix(vec3(1.65,.36,.022),rawChroma,.05);col+=resolvedRing*ringCore*ringDisplay*mix(.18,1.18,float(uObject));
  float edgeExposure=mix(1.,mix(1.52,1.16,float(uObject)),smoothstep(1.22,1.5,uInclination));col*=uExposure*edgeExposure;if(uTone==0)col=aces(col);else if(uTone==1)col=col/(1.+col);else col=clamp(col,0.,1.);
  col+=(hash(gl_FragCoord.xy+uTime*83.)-.5)*uGrain*(uMode==0?.7:.22);col*=1.-.22*pow(length((uv-.5)*1.35),2.);
  outColor=vec4(max(col,0.),1.);
